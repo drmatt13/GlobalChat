@@ -1,5 +1,5 @@
 import fs from "fs";
-import { createServer } from "https";
+import { createServer } from "http";
 // import { createServer } from "http";
 import { Server } from "socket.io";
 import { config } from "dotenv";
@@ -7,13 +7,13 @@ import ogs from "open-graph-scraper";
 
 config();
 
-const options = {
-  key: fs.readFileSync("./server.key"),
-  cert: fs.readFileSync("./server.cert"),
-};
+// const options = {
+//   key: fs.readFileSync("./server.key"),
+//   cert: fs.readFileSync("./server.cert"),
+// };
 
-const httpsServer = createServer(options);
-const io = new Server(httpsServer, {
+const httpServer = createServer();
+const io = new Server(httpServer, {
   maxHttpBufferSize: 1e8,
   cors: {
     origin: "*",
@@ -86,6 +86,6 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 8080;
 
-httpsServer.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT, () => {
   console.log(`Socket.IO server is running on port ${PORT}`);
 });

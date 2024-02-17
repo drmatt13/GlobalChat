@@ -35,13 +35,13 @@ const useSocket = ({
       "SOCKET_URL: ",
       process.env.NEXT_PUBLIC_SOCKETIO_SERVER_URL
         ? process.env.NEXT_PUBLIC_SOCKETIO_SERVER_URL
-        : "https://localhost:8080"
+        : "http://localhost:8080"
     );
 
     const socket = io(
       process.env.NEXT_PUBLIC_SOCKETIO_SERVER_URL
         ? process.env.NEXT_PUBLIC_SOCKETIO_SERVER_URL
-        : "https://localhost:8080",
+        : "http://localhost:8080",
       {
         secure: true,
         rejectUnauthorized: false, // Only use this for self-signed certs!
