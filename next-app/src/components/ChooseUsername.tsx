@@ -30,7 +30,7 @@ const ChooseUsername = () => {
 
   return (
     <div
-      className={`absolute top-0 w-full h-screen flex flex-col items-center pt-40 sm:pt-0 sm:justify-center`}
+      className={`absolute top-0 w-full h-dvh flex flex-col items-center pt-56 sm:pt-0 sm:justify-center`}
     >
       <form onSubmit={onSubmit}>
         <div>

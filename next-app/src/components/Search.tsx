@@ -7,7 +7,7 @@ const Search = () => {
   const { searching, setSearching } = useContext(AppContext);
 
   return (
-    <div className="absolute w-screen h-screen bg-black/20 dark:bg-black/60 backdrop-blur-sm flex justify-center items-start z-20">
+    <div className="absolute w-screen h-lvh bg-black/20 dark:bg-black/60 backdrop-blur-sm flex justify-center items-start z-20">
       <div
         className="absolute w-full h-full"
         onClick={() => setSearching(false)}

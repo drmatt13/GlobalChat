@@ -48,8 +48,8 @@ const Navbar = () => {
       )}
     </div>
   ) : (
-    <div className="h-14 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white">
-      <div className="h-full flex items-center px-4 xl:px-5">
+    <div className="h-14 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-5">
+      <div className="h-full flex items-center">
         <div className="hidden sm:block mr-[.6rem]">
           <img className="w-[1.4rem]" src="/socketio.png" alt="logo" />
         </div>
@@ -94,7 +94,7 @@ const Navbar = () => {
             <span className="hidden md:block">new session</span>
           </div>
         </div>
-        <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
+        <div className="h-full flex items-center pl-4 xl:pl-5 md:text-base lg:text-base xl:text-base">
           <div className="w-5 flex justify-center items-center">
             <i
               onClick={toggleDarkMode}
@@ -102,7 +102,7 @@ const Navbar = () => {
                 darkMode
                   ? "fa-moon hover:text-purple-500"
                   : "fa-sun hover:text-yellow-600"
-              } fa-solid lg:text-sm xl:text-lg cursor-pointer text-white/80 transition-all`}
+              } fa-solid /lg:text-sm xl:text-lg cursor-pointer text-white/80 transition-all`}
             />
           </div>
         </div>

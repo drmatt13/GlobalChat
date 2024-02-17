@@ -102,21 +102,23 @@ export default function Home() {
           setSearching,
         }}
       >
-        <div className="relative w-screen h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white flex flex-col">
-          {searching && <Search />}
-          {fullScreenImage && <FullScreenImage />}
-          <Navbar />
-          {!user.name ? (
-            <ChooseUsername />
-          ) : !user.avatar ? (
-            <ChooseAvatar />
-          ) : socketError ? (
-            <div>error</div>
-          ) : !socketConnection ? (
-            <div>connecting...</div>
-          ) : (
-            <GlobalChat />
-          )}
+        <div className="h-lvh bg-gray-200 dark:bg-zinc-800 dark:text-white">
+          <div className="relative w-screen h-dvh flex flex-col">
+            {searching && <Search />}
+            {fullScreenImage && <FullScreenImage />}
+            <Navbar />
+            {!user.name ? (
+              <ChooseUsername />
+            ) : !user.avatar ? (
+              <ChooseAvatar />
+            ) : socketError ? (
+              <div>error</div>
+            ) : !socketConnection ? (
+              <div>connecting...</div>
+            ) : (
+              <GlobalChat />
+            )}
+          </div>
         </div>
       </AppContext.Provider>
     </>

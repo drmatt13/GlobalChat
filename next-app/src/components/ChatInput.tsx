@@ -202,9 +202,9 @@ const ChatInput = ({
             />
           </div>
         )}
-        <div className="flex px-4 sm:px-5 mt-3">
+        <div className="flex px-4 mt-3">
           <img
-            className="h-8 w-8 sm:w-8 sm:h-8 rounded-full cursor-pointer shadow-xl mr-2"
+            className="h-8 w-8 sm:w-10 sm:h-10 rounded-full cursor-pointer shadow-xl mr-2"
             src={`data:image/jpg;base64, ${avatarList[user?.avatar!]}`}
             alt="avatar"
           />

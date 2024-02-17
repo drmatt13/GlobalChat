@@ -110,7 +110,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
                 alt="uploaded"
                 className={`${
                   message.text && "mt-2"
-                } max-w-full max-h-[35vh] rounded-xl cursor-pointer bg-white dark:bg-zinc-700 shadow-sm`}
+                } max-w-full max-h-56 sm:max-h-80  rounded-xl cursor-pointer bg-white dark:bg-zinc-700 shadow-sm`}
                 onClick={() => setFullScreenImage(message.image!)}
               />
             )}
@@ -133,7 +133,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
                     <img
                       src={message.og.image[0].url}
                       alt={message.og.image[0].url}
-                      className="cursor-pointer select-none h-12 min-h-52 sm:min-h-[15rem] max-w-full sm:max-h-[35vh] object-cover"
+                      className="cursor-pointer select-none h-full min-h-40 max-w-full max-h-56 sm:max-h-64 object-cover"
                       loading="lazy"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
