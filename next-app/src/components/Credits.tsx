@@ -4,7 +4,7 @@ import { useContext } from "react";
 import AppContext from "@/context/AppContext";
 
 const Credits = () => {
-  const { credits, setCredits } = useContext(AppContext);
+  const { credits, setCredits, mobile } = useContext(AppContext);
 
   return (
     <div
@@ -29,7 +29,9 @@ const Credits = () => {
         <div className="mt-1.5 text-xs">
           <a
             href="https://matts-projects.vercel.app"
-            className="text-blue-500 dark:text-blue-400 hover:underline visited:text-purple-500 dark:visited:text-purple-400"
+            className={`${
+              mobile ? "active:underline" : "hover:underline"
+            } text-blue-500 dark:text-blue-400 visited:text-purple-500 dark:visited:text-purple-400`}
             target="_blank"
             rel="noopener noreferrer"
           >
