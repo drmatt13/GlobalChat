@@ -67,7 +67,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
             }}
           >
             {message.text && (
-              <div className="w-max max-w-full min-w-28 min-h-8 flex flex-col rounded-xl px-3 py-2 bg-white dark:bg-zinc-700 shadow">
+              <div className="w-max max-w-full min-w-28 min-h-8 flex flex-col rounded-lg px-3 py-2 bg-white dark:bg-zinc-700 shadow">
                 <div
                   className={`${
                     mobile
@@ -126,7 +126,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
                 alt="uploaded"
                 className={`${
                   message.text && "mt-2"
-                } max-w-full max-h-56 sm:max-h-80  rounded-xl cursor-pointer bg-white dark:bg-zinc-700 shadow-sm`}
+                } max-w-full max-h-56 sm:max-h-80 rounded-lg cursor-pointer bg-white dark:bg-zinc-700 shadow-sm`}
                 onClick={() => setFullScreenImage(message.image!)}
               />
             )}

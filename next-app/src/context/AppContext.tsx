@@ -7,12 +7,8 @@ import io from "socket.io-client";
 
 interface AppContextInterface {
   darkMode?: boolean;
-  credits: boolean;
-  setCredits: Dispatch<SetStateAction<boolean>>;
-  searching: boolean;
-  fullScreenImage?: string;
+  fullScreenImage: string;
   setFullScreenImage: Dispatch<SetStateAction<string>>;
-  setSearching: Dispatch<SetStateAction<boolean>>;
   toggleDarkMode: () => void;
   mobile?: boolean;
   setMobile?: Dispatch<SetStateAction<boolean>>;
@@ -31,16 +27,31 @@ interface AppContextInterface {
   >;
   socketConnection: ReturnType<typeof io> | null;
   initialLoad: boolean;
+  modal:
+    | "credits"
+    | "messages"
+    | "active users"
+    | "search"
+    | "new session"
+    | undefined;
+  setModal: Dispatch<
+    SetStateAction<
+      | "credits"
+      | "messages"
+      | "active users"
+      | "search"
+      | "new session"
+      | undefined
+    >
+  >;
 }
 
 const AppContext = createContext<AppContextInterface>({
   darkMode: false,
-  credits: false,
-  setCredits: () => {},
-  searching: false,
+  modal: undefined,
+  setModal: () => {},
   fullScreenImage: "",
   setFullScreenImage: () => {},
-  setSearching: () => {},
   toggleDarkMode: () => {},
   mobile: false,
   setMobile: () => {},

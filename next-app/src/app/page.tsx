@@ -4,11 +4,14 @@ import Cookies from "js-cookie";
 
 // components
 import Credits from "@/components/Credits";
+import Messages from "@/components/Messages";
+import ActiveUsers from "@/components/ActiveUsers";
+import Search from "@/components/Search";
+import NewSession from "@/components/NewSession";
 import ChooseUsername from "@/components/ChooseUsername";
 import ChooseAvatar from "@/components/ChooseAvatar";
 import Navbar from "@/components/Navbar";
 import GlobalChat from "@/components/GlobalChat";
-import Search from "@/components/Search";
 import FullScreenImage from "@/components/FullScreenImage";
 
 // context
@@ -28,6 +31,16 @@ export default function Home() {
 
   const [credits, setCredits] = useState<boolean>(false);
   const [searching, setSearching] = useState<boolean>(false);
+
+  const [modal, setModal] = useState<
+    | "credits"
+    | "messages"
+    | "active users"
+    | "search"
+    | "new session"
+    | undefined
+  >(undefined);
+
   const [user, setUser] = useState<User>({});
 
   const [fullScreenImage, setFullScreenImage] = useState<string>("");
@@ -91,8 +104,8 @@ export default function Home() {
         value={{
           user,
           setUser,
-          credits,
-          setCredits,
+          modal,
+          setModal,
           fullScreenImage,
           setFullScreenImage,
           globalMessages,
@@ -103,15 +116,16 @@ export default function Home() {
           toggleDarkMode,
           mobile,
           socketConnection,
-          searching,
-          setSearching,
           initialLoad,
         }}
       >
         <div className="relative h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white overflow-hidden">
+          <FullScreenImage />
           <Credits />
+          <Messages />
+          <ActiveUsers />
+          <NewSession />
           <Search />
-          {fullScreenImage && <FullScreenImage />}
           <div className="relative w-screen h-dvh flex flex-col overflow-hidden">
             <Navbar />
             {!user.name ? (

@@ -196,16 +196,16 @@ const ChatInput = ({
               onClick={() => removeImage()}
               className={`${
                 mobile
-                  ? "active:border-black/50 dark:active:bg-white/60 active:text-black"
-                  : "hover:border-black/50 dark:hover:bg-white/60 hover:text-black"
-              } cursor-pointer absolute -top-2 -right-1.5 h-[1.3rem] w-[1.3rem] border border-black/30 bg-white dark:bg-white/40 shadow dark:shadow-black/30 backdrop-blur rounded-full flex justify-center items-center text-[.7rem] text-black transition-all ease-out duration-150`}
+                  ? "active:border-black/20 active:bg-white dark:active:bg-white/[65%] active:text-black"
+                  : "hover:border-black/20 hover:bg-white dark:hover:bg-white/[65%] hover:text-black"
+              } z-10 cursor-pointer absolute -top-2 -right-1.5 h-[1.3rem] w-[1.3rem] border border-black/15 bg-white/90 dark:bg-white/50 shadow dark:shadow-black/30 backdrop-blur rounded-full flex justify-center items-center text-[.7rem] text-black transition-all ease-out duration-150`}
             >
               <i className="fa-solid fa-times" />
             </div>
             <img
               src={image}
               alt="preview"
-              className={`aspect-square w-16 object-cover object-center rounded-md bg-white select-none border border-black/25`}
+              className={`aspect-square w-16 object-cover object-center rounded-md select-none border border-black/25 dark:border-white/10 will-change-transform`}
               onError={removeImage}
             />
           </div>

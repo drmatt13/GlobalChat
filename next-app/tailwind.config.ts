@@ -26,8 +26,8 @@ const config: Config = {
       },
       keyframes: {
         "cart-bounce": {
-          "0%, 90%, 95%, 100%": { transform: "translate(0.5rem, -0.375rem)" },
-          "92.5%, 97.5%": { transform: "translate(0.5rem, -0.65625rem)" },
+          "0%, 90%, 95%, 100%": { transform: "translate(100%, 0)" },
+          "92.5%, 97.5%": { transform: "translate(100%, -0.375rem)" },
         },
         "fade-in": {
           "0%": { opacity: "0" },

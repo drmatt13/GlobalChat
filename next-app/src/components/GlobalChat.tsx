@@ -69,6 +69,9 @@ const GlobalChat = () => {
     setTimeout(() => {
       scrollToBottom("instant");
     }, 50);
+    setTimeout(() => {
+      scrollToBottom("instant");
+    }, 100);
   }, [scrollToBottom]);
 
   const submitMessage = useCallback(
@@ -83,7 +86,7 @@ const GlobalChat = () => {
     <div className="relative flex-1 flex justify-center overflow-clip">
       <div className="h-full w-full flex flex-col ">
         <div
-          className="w-full flex-1 flex flex-col overflow-y-scroll px-4"
+          className="w-full flex-1 flex flex-col overflow-y-scroll px-4 pb-1"
           ref={scrollContainerRef}
         >
           {globalMessages.map((message, index) => (
