@@ -8,6 +8,12 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SocketChat",
   description: "A simple chat app using Next.js and Socket.io",
+  openGraph: {
+    title: "SocketChat",
+    description: "A simple chat app using Next.js and Socket.io",
+    type: "website",
+    images: [{ url: "/opengraph-image.png" }],
+  },
 };
 
 export default function RootLayout({
@@ -27,6 +33,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+        <meta />
       </head>
       <body
         className={`${inter.className} ${
