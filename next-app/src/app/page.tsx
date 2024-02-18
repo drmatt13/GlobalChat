@@ -108,11 +108,11 @@ export default function Home() {
           initialLoad,
         }}
       >
-        <div className="h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white">
+        <div className="relative h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white overflow-hidden">
+          <Credits />
+          <Search />
+          {fullScreenImage && <FullScreenImage />}
           <div className="relative w-screen h-dvh flex flex-col overflow-hidden">
-            <Credits />
-            <Search />
-            {fullScreenImage && <FullScreenImage />}
             <Navbar />
             {!user.name ? (
               <ChooseUsername />

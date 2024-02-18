@@ -22,7 +22,7 @@ const Search = () => {
       <div
         className={`${
           searching ? "opacity-100" : "opacity-0"
-        }  absolute w-full h-full bg-black/20 dark:bg-black/60 backdrop-blur`}
+        }  absolute w-full h-[200vh] bg-black/20 dark:bg-black/60 backdrop-blur`}
         onClick={() => setSearching(false)}
       />
       <div
