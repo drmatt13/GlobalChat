@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useCallback } from "react";
 import Cookies from "js-cookie";
 
 // components
@@ -22,6 +22,7 @@ import type User from "@/types/userType";
 import type Message from "@/types/messageType";
 
 export default function Home() {
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [mobile, setMobile] = useState<boolean>(false);
 
@@ -60,16 +61,21 @@ export default function Home() {
       setDarkMode(true);
       document.body.classList.add("dark");
     }
+    setInitialLoad(false);
   }, []);
 
   useEffect(() => {
+    let recentTouch = false;
     const onMouseMove = () => {
-      if (mobile) setMobile(false);
+      if (!recentTouch) {
+        setMobile(false);
+      }
+      recentTouch = false;
     };
     const onTouchStart = () => {
-      if (!mobile) setMobile(true);
+      recentTouch = true;
+      setMobile(true);
     };
-
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("touchstart", onTouchStart);
 
@@ -77,16 +83,10 @@ export default function Home() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("touchstart", onTouchStart);
     };
-  }, [mobile]);
+  }, []);
 
   return (
     <>
-      <style jsx global={true}>{`
-        html {
-          font-size: clamp(14px, 2.6vw, 16px);
-          line-height: 1.5;
-        }
-      `}</style>
       <AppContext.Provider
         value={{
           user,
@@ -105,6 +105,7 @@ export default function Home() {
           socketConnection,
           searching,
           setSearching,
+          initialLoad,
         }}
       >
         <div className="h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white">

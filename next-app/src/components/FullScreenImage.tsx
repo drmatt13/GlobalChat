@@ -8,7 +8,7 @@ const FullScreenImage = () => {
   const { fullScreenImage, setFullScreenImage } = useContext(AppContext);
 
   return (
-    <div className="absolute w-screen h-screen bg-black/20 dark:bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="absolute w-screen h-dvh bg-black/20 dark:bg-black/60 backdrop-blur flex justify-center items-center z-50">
       <div
         className="absolute w-full h-full"
         onClick={() => setFullScreenImage("")}

@@ -14,19 +14,15 @@ const Navbar = () => {
     user,
     setUser,
     setPrivateMessages,
+    initialLoad,
+    mobile,
   } = useContext(AppContext);
-
-  const [initialLoad, setInitialLoad] = useState<boolean>(true);
 
   const newSession = useCallback(() => {
     setUser({});
     setPrivateMessages({});
     socketConnection?.disconnect();
   }, [setPrivateMessages, setUser, socketConnection]);
-
-  useEffect(() => {
-    setInitialLoad(false);
-  }, []);
 
   return !socketConnection?.connected ? (
     <div
@@ -37,7 +33,11 @@ const Navbar = () => {
     >
       {!initialLoad && (
         <button
-          className={`w-full h-full cursor-pointer hover:scale-90 transition-all bg-black/50 hover:bg-black/75 z-50 rounded-full animate-fade-in-fast`}
+          className={`${
+            mobile
+              ? "active:scale-90 active:bg-black/75"
+              : "hover:scale-90 hover:bg-black/75"
+          } w-full h-full cursor-pointer transition-all bg-black/50 z-50 rounded-full animate-fade-in-fast`}
           onClick={toggleDarkMode}
         >
           <i
@@ -52,7 +52,9 @@ const Navbar = () => {
     <div className="h-14 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-5">
       <div className="h-full flex items-center">
         <div
-          className="flex group cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
+          className={`${
+            mobile ? "active:opacity-100" : "hover:opacity-100"
+          } flex group cursor-pointer opacity-80 transition-opacity`}
           onClick={() => setCredits(true)}
         >
           <div className="hidden sm:block mr-[.6rem]">
@@ -63,7 +65,11 @@ const Navbar = () => {
       </div>
       <div className="flex">
         <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
-          <div className="cursor-pointer text-white/80 hover:text-white transition-colors">
+          <div
+            className={`${
+              mobile ? "active:text-white" : "hover:text-white"
+            } cursor-pointer text-white/80 transition-colors`}
+          >
             <span className="block md:hidden">
               <i className={`fa-regular fa-comment text-lg`} />
             </span>
@@ -71,7 +77,11 @@ const Navbar = () => {
           </div>
         </div>
         <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
-          <div className="cursor-pointer text-white/80 hover:text-white transition-colors">
+          <div
+            className={`${
+              mobile ? "active:text-white" : "hover:text-white"
+            } cursor-pointer text-white/80 transition-colors`}
+          >
             <span className="block md:hidden">
               <i className={`fa-regular fa-user text-lg`} />
             </span>
@@ -80,7 +90,9 @@ const Navbar = () => {
         </div>
         <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
           <div
-            className="cursor-pointer text-white/80 hover:text-white transition-colors"
+            className={`${
+              mobile ? "active:text-white" : "hover:text-white"
+            } cursor-pointer text-white/80 transition-colors`}
             onClick={() => setSearching(true)}
           >
             <span className="block md:hidden">
@@ -91,7 +103,9 @@ const Navbar = () => {
         </div>
         <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
           <div
-            className="cursor-pointer text-white/80 hover:text-white transition-colors"
+            className={`${
+              mobile ? "active:text-white" : "hover:text-white"
+            } cursor-pointer text-white/80 transition-colors`}
             onClick={newSession}
           >
             <span className="block md:hidden">
@@ -106,8 +120,16 @@ const Navbar = () => {
               onClick={toggleDarkMode}
               className={`${
                 darkMode
-                  ? "fa-moon hover:text-purple-500"
-                  : "fa-sun hover:text-yellow-600"
+                  ? `${
+                      mobile
+                        ? "active:text-purple-500"
+                        : "hover:text-purple-500"
+                    } fa-moon`
+                  : `${
+                      mobile
+                        ? "active:text-yellow-600"
+                        : "hover:text-yellow-600"
+                    } fa-sun`
               } fa-solid /lg:text-sm xl:text-lg cursor-pointer text-white/80 transition-all`}
             />
           </div>

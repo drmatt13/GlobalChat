@@ -25,7 +25,7 @@ const isValidUrl = (string: string): boolean => {
 };
 
 const ChatMessage = ({ message }: { message: Message }) => {
-  const { setFullScreenImage } = useContext(AppContext);
+  const { setFullScreenImage, mobile } = useContext(AppContext);
 
   return (
     <div className="flex mt-2.5 sm:mt-3 w-full">
@@ -40,7 +40,13 @@ const ChatMessage = ({ message }: { message: Message }) => {
             </>
           ) : (
             <>
-              <span className="font-bold text-blue-600 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 underline cursor-pointer">
+              <span
+                className={`${
+                  mobile
+                    ? "active:text-blue-500 dark:active:text-blue-400"
+                    : "hover:text-blue-500 dark:hover:text-blue-400"
+                } font-bold text-blue-600 dark:text-blue-500 underline cursor-pointer`}
+              >
                 {message.user.name}
               </span>{" "}
               has joined the chat!
@@ -62,7 +68,13 @@ const ChatMessage = ({ message }: { message: Message }) => {
           >
             {message.text && (
               <div className="w-max max-w-full min-w-28 min-h-8 flex flex-col rounded-xl px-3 py-2 bg-white dark:bg-zinc-700 shadow">
-                <div className="w-max text-xs underline text-black/85 hover:text-black dark:text-white opacity-90 dark:opacity-75 hover:opacity-100 dark:hover:opacity-100 cursor-pointer">
+                <div
+                  className={`${
+                    mobile
+                      ? "active:text-black active:opacity-100 dark:active:opacity-100"
+                      : "hover:text-black hover:opacity-100 dark:hover:opacity-100"
+                  } w-max text-xs underline text-black/85 dark:text-white opacity-90 dark:opacity-75 cursor-pointer`}
+                >
                   {message.user?.name}
                 </div>
                 <div className="w-full">
@@ -79,7 +91,11 @@ const ChatMessage = ({ message }: { message: Message }) => {
                               {isUrl ? (
                                 <a
                                   href={word}
-                                  className="text-blue-600 hover:text-blue-500 dark:text-blue-500 dark:hover:text-blue-400 underline cursor-pointer visited:text-purple-600 dark:visited:text-purple-400 visited:hover:text-purple-500 dark:visited:hover:text-purple-300"
+                                  className={`${
+                                    mobile
+                                      ? "active:text-blue-500 dark:active:text-blue-400 visited:active:text-purple-500 dark:visited:active:text-purple-300"
+                                      : "hover:text-blue-500 dark:hover:text-blue-400 visited:hover:text-purple-500 dark:visited:hover:text-purple-300"
+                                  } text-blue-600 dark:text-blue-500 underline cursor-pointer visited:text-purple-600 dark:visited:text-purple-400`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >

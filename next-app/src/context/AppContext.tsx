@@ -30,6 +30,7 @@ interface AppContextInterface {
     }>
   >;
   socketConnection: ReturnType<typeof io> | null;
+  initialLoad: boolean;
 }
 
 const AppContext = createContext<AppContextInterface>({
@@ -50,6 +51,7 @@ const AppContext = createContext<AppContextInterface>({
   privateMessages: {},
   setPrivateMessages: () => {},
   socketConnection: null,
+  initialLoad: true,
 });
 
 export default AppContext;

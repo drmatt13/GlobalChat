@@ -36,7 +36,7 @@ const ChatInput = ({
   scrollContainerRef: React.RefObject<HTMLDivElement>;
   scrollBarWidth: number;
 }) => {
-  const { user, darkMode, globalMessages } = useContext(AppContext);
+  const { user, darkMode, globalMessages, mobile } = useContext(AppContext);
 
   const [text, setText] = useState<string>("");
 
@@ -172,9 +172,15 @@ const ChatInput = ({
         >
           <div
             onClick={() => scrollToBottom("smooth")}
-            className={`h-8 w-8 flex justify-center items-center rounded-full bg-white dark:bg-white/40 shadow shadow-black/20 backdrop-blur transition-all hover:scale-110 cursor-pointer group`}
+            className={`${
+              mobile ? "active:scale-110" : "hover:scale-110"
+            } h-8 w-8 flex justify-center items-center rounded-full bg-white dark:bg-white/40 shadow shadow-black/20 backdrop-blur transition-all cursor-pointer group`}
           >
-            <i className="fa-solid fa-arrow-down text-black/75 group-hover:text-black transition-colors" />
+            <i
+              className={`${
+                mobile ? "group-active:text-black" : "group-hover:text-black"
+              } fa-solid fa-arrow-down text-black/75 transition-colors`}
+            />
           </div>
         </div>
         {image && (
@@ -188,7 +194,11 @@ const ChatInput = ({
           >
             <div
               onClick={() => removeImage()}
-              className="cursor-pointer absolute -top-2 -right-1.5 h-[1.3rem] w-[1.3rem] border border-black/30 hover:border-black/50 bg-white dark:bg-white/40 shadow dark:hover:bg-white/60 dark:shadow-black/30 backdrop-blur rounded-full flex justify-center items-center text-[.7rem] text-black hover:text-black  transition-all ease-out duration-150"
+              className={`${
+                mobile
+                  ? "active:border-black/50 dark:active:bg-white/60 active:text-black"
+                  : "hover:border-black/50 dark:hover:bg-white/60 hover:text-black"
+              } cursor-pointer absolute -top-2 -right-1.5 h-[1.3rem] w-[1.3rem] border border-black/30 bg-white dark:bg-white/40 shadow dark:shadow-black/30 backdrop-blur rounded-full flex justify-center items-center text-[.7rem] text-black transition-all ease-out duration-150`}
             >
               <i className="fa-solid fa-times" />
             </div>
@@ -267,7 +277,11 @@ const ChatInput = ({
                 }
                 ${
                   /[^\s]/.test(textareaRef.current?.value as string) || image
-                    ? "dark:text-white/80 dark:hover:text-white text-black/75 hover:text-blue-600 cursor-pointer"
+                    ? `${
+                        mobile
+                          ? "dark:active:text-white active:text-blue-600"
+                          : "dark:hover:text-white hover:text-blue-600"
+                      } dark:text-white/80 text-black/75 cursor-pointer`
                     : "text-black/40 dark:text-white/25 cursor-not-allowed"
                 } 
                 ml-2.5 fa-solid fa-share transition-all ease-out duration-150`}
@@ -283,8 +297,13 @@ const ChatInput = ({
                   focused || textareaRef.current?.value
                     ? "scale-100"
                     : "scale-0"
-                } 
-                dark:text-white/80 dark:hover:text-white text-black/75 hover:text-blue-600 cursor-pointer fa-solid fa-image transition-all ease-out duration-150`}
+                }
+                ${
+                  mobile
+                    ? "dark:active:text-white active:text-blue-600"
+                    : "dark:hover:text-white hover:text-blue-600"
+                }
+                dark:text-white/80 text-black/75 cursor-pointer fa-solid fa-image transition-all ease-out duration-150`}
               />
             </div>
           </div>
@@ -300,9 +319,13 @@ const ChatInput = ({
                   ? "hidden opacity-0 w-0 scale-x-0"
                   : "opacity-100 ml-2 scale-x-100"
               } 
+              ${image ? "fa-share" : `fa-image`}
               ${
-                image ? "fa-share" : `fa-image`
-              } cursor-pointer fa-solid transition-all ease-linear duration-150 dark:text-white/80 dark:hover:text-white text-black/75 hover:text-blue-600`}
+                mobile
+                  ? "dark:active:text-white active:text-blue-600"
+                  : "dark:hover:text-white hover:text-blue-600"
+              }
+              cursor-pointer fa-solid transition-all ease-linear duration-150 dark:text-white/80 text-black/75`}
             />
           </div>
         </div>
