@@ -5,16 +5,16 @@ import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// export const metadata: Metadata = {
-//   title: "SocketChat",
-//   description: "A simple chat app using Next.js and Socket.io",
-//   openGraph: {
-//     title: "SocketChat",
-//     description: "A live chat app using Next.js and Socket.io deployed on AWS",
-//     type: "website",
-//     images: [{ url: "/opengraph-image.png" }],
-//   },
-// };
+export const metadata: Metadata = {
+  title: "SocketChat",
+  description: "A simple chat app using Next.js and Socket.io",
+  openGraph: {
+    title: "SocketChat",
+    description: "A live chat app using Next.js and Socket.io deployed on AWS",
+    type: "website",
+    images: "/opengraph-image.png",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -33,14 +33,6 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
-
-        <meta property="og:title" content="SocketChat" />
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:description"
-          content="A live chat app using Next.js and Socket.io deployed on AWS"
-        />
-        <meta property="og:image" content="/opengraph-image.png" />
       </head>
       <body
         className={`${inter.className} ${
