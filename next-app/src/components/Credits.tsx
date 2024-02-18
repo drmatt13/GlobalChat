@@ -23,7 +23,7 @@ const Credits = () => {
           credits
             ? "opacity-100 ease-out duration-500"
             : "opacity-0 translate-y-80 ease-in duration-300"
-        } z-10 w-[95%] max-w-96 mt-40 transition-all bg-white/85 dark:bg-zinc-800/85 rounded-lg shadow-lg p-5 text-sm text-center border border-white/50 dark:border-black/50`}
+        } z-10 w-[90%] max-w-96 mt-40 transition-all bg-white/85 dark:bg-zinc-800/85 rounded-lg shadow-lg p-5 text-sm text-center border border-white/50 dark:border-black/50`}
       >
         <p>Created by Matthew Sweeney</p>
         <div className="mt-1.5 text-xs">
