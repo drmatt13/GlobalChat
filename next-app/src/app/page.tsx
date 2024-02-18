@@ -85,6 +85,7 @@ export default function Home() {
         html {
           font-size: clamp(14px, 2.6vw, 16px);
           line-height: 1.5;
+          background-color: black;
         }
       `}</style>
       <AppContext.Provider
@@ -107,8 +108,8 @@ export default function Home() {
           setSearching,
         }}
       >
-        <div className="h-lvh bg-gray-200 dark:bg-zinc-800 dark:text-white">
-          <div className="relative w-screen h-dvh flex flex-col">
+        <div className="h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white">
+          <div className="relative w-screen h-dvh flex flex-col overflow-hidden">
             <Credits />
             <Search />
             {fullScreenImage && <FullScreenImage />}
