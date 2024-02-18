@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SocketChat",
-  description: "A simple chat app using Next.js and Socket.io",
+  description: "A simple chat app using Next.js and Socket.IO deployed on AWS",
   openGraph: {
     title: "SocketChat",
     description: "A live chat app using Next.js and Socket.io deployed on AWS",
