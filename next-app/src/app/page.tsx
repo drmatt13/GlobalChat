@@ -85,7 +85,6 @@ export default function Home() {
         html {
           font-size: clamp(14px, 2.6vw, 16px);
           line-height: 1.5;
-          background-color: black;
         }
       `}</style>
       <AppContext.Provider
