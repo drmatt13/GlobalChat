@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
       }
     }
 
-    if (message.image) console.log(message.image);
+    // if (message.image) console.log(message.image);
 
     io.emit("broadcast global message", message);
   });

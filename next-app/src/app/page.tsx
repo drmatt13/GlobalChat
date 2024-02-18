@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Cookies from "js-cookie";
 
+// components
+import Credits from "@/components/Credits";
 import ChooseUsername from "@/components/ChooseUsername";
 import ChooseAvatar from "@/components/ChooseAvatar";
 import Navbar from "@/components/Navbar";
@@ -23,6 +25,7 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [mobile, setMobile] = useState<boolean>(false);
 
+  const [credits, setCredits] = useState<boolean>(false);
   const [searching, setSearching] = useState<boolean>(false);
   const [user, setUser] = useState<User>({});
 
@@ -88,6 +91,8 @@ export default function Home() {
         value={{
           user,
           setUser,
+          credits,
+          setCredits,
           fullScreenImage,
           setFullScreenImage,
           globalMessages,
@@ -104,7 +109,8 @@ export default function Home() {
       >
         <div className="h-lvh bg-gray-200 dark:bg-zinc-800 dark:text-white">
           <div className="relative w-screen h-dvh flex flex-col">
-            {searching && <Search />}
+            <Credits />
+            <Search />
             {fullScreenImage && <FullScreenImage />}
             <Navbar />
             {!user.name ? (

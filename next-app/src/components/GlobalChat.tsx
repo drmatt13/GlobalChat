@@ -52,8 +52,10 @@ const GlobalChat = () => {
       }
     };
     scrollContainer.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
     return () => {
       scrollContainer.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
     };
   }, [scrollToBottom]);
 

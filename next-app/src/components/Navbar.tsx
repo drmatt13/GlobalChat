@@ -7,6 +7,7 @@ import AppContext from "@/context/AppContext";
 const Navbar = () => {
   const {
     socketConnection,
+    setCredits,
     darkMode,
     toggleDarkMode,
     setSearching,
@@ -50,10 +51,15 @@ const Navbar = () => {
   ) : (
     <div className="h-14 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-5">
       <div className="h-full flex items-center">
-        <div className="hidden sm:block mr-[.6rem]">
-          <img className="w-[1.4rem]" src="/socketio.png" alt="logo" />
+        <div
+          className="flex group cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
+          onClick={() => setCredits(true)}
+        >
+          <div className="hidden sm:block mr-[.6rem]">
+            <img className="w-[1.4rem]" src="/socketio.png" alt="logo" />
+          </div>
+          <div>SocketChat</div>
         </div>
-        <div>SocketChat</div>
       </div>
       <div className="flex">
         <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
