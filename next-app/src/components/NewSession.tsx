@@ -18,7 +18,7 @@ const NewSession = () => {
     <div
       className={`${
         modal === "new session" ? "pointer-events-auto" : "pointer-events-none"
-      } absolute w-screen h-lvh flex justify-center md:justify-end items-start z-20`}
+      } absolute w-full h-lvh flex justify-center md:justify-end items-start z-20 overflow-hidden`}
     >
       <div
         className={`${

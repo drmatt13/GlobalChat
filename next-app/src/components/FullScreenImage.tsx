@@ -5,7 +5,10 @@ import { useContext, useState, useEffect, useRef } from "react";
 import AppContext from "@/context/AppContext";
 
 const FullScreenImage = () => {
-  const { fullScreenImage, setFullScreenImage } = useContext(AppContext);
+  const { fullScreenImage, setFullScreenImage, mobile } =
+    useContext(AppContext);
+
+  const [initialScreenHeight, setInitialScreenHeight] = useState<number>(0);
 
   const [animationState, setAnimationState] = useState<
     "closed" | "opening" | "opened" | "closing"
@@ -20,7 +23,6 @@ const FullScreenImage = () => {
   }, [fullScreenImage]);
 
   useEffect(() => {
-    console.log(animationState);
     if (animationState === "opening") {
       openingTimeoutRef.current = setTimeout(() => {
         setAnimationState("opened");
@@ -38,13 +40,20 @@ const FullScreenImage = () => {
     };
   }, [animationState, setFullScreenImage]);
 
+  useEffect(() => {
+    // on the first render, set the initial screen height
+    if (initialScreenHeight === 0) {
+      setInitialScreenHeight(window.innerHeight);
+    }
+  }, [initialScreenHeight]);
+
   return (
     <div
       className={`${
         fullScreenImage.length > 0
           ? "pointer-events-auto"
           : "pointer-events-none"
-      } absolute w-screen h-lvh flex items-start z-50`}
+      } absolute top-0 w-full h-lvh flex items-start z-50 overflow-hidden`}
     >
       <div
         className={`
@@ -56,11 +65,14 @@ const FullScreenImage = () => {
           (animationState === "closing" || animationState === "closed") &&
           "opacity-0 duration-300 ease-in"
         }
-        absolute w-full h-[200vh] bg-black/20 dark:bg-black/60 backdrop-blur`}
+        absolute w-full h-[200vh] bg-black/75 dark:bg-black/80 backdrop-blur`}
         onClick={() => setAnimationState("closing")}
       />
       <div
         className={`w-full h-dvh flex justify-center items-center transition-all`}
+        style={{
+          minHeight: `${mobile ? initialScreenHeight + "px" : "100dvh"}`,
+        }}
       >
         <img
           src={fullScreenImage}
@@ -69,7 +81,7 @@ const FullScreenImage = () => {
           ${
             animationState === "closed" &&
             fullScreenImage.length > 0 &&
-            "-translate-x-[150%] scale-125 opacity-90"
+            "-translate-x-[160%] scale-150 opacity-75 blur-sm"
           }
           ${
             animationState === "opening" &&
@@ -86,7 +98,7 @@ const FullScreenImage = () => {
             fullScreenImage.length === 0 &&
             "hidden"
           }
-          z-10 max-w-[80%] max-h-[80vh] rounded-xl shadow-2xl border border-black/20 dark:border-white/10`}
+          z-10 w-max max-w-[80%] sm:max-w-[34rem] md:max-w-[38rem] lg:max-w-[42rem] xl:max-w-[46rem] max-h-[80%] rounded-xl md:rounded-2xl xl:rounded-3xl shadow-2xl border border-black/10 dark:border-black/20 bg-white/25 dark:bg-zinc-500/20 backdrop-blur-2xl`}
         />
       </div>
     </div>

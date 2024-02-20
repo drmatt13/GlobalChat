@@ -10,6 +10,7 @@ const useSocket = ({
   setUser,
   setGlobalMessages,
   setPrivateMessages,
+  setActiveUsers,
 }: {
   user: User;
   setUser: Dispatch<SetStateAction<User>>;
@@ -22,6 +23,15 @@ const useSocket = ({
       };
     }>
   >;
+  setActiveUsers: Dispatch<
+    SetStateAction<{
+      [key: string]: {
+        name: string;
+        avatar: string;
+        id: string;
+      };
+    }>
+  >;
 }) => {
   const [socketConnection, setSocketConnection] = useState<ReturnType<
     typeof io
@@ -29,7 +39,7 @@ const useSocket = ({
   const [socketError, setSocketError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user.name || !user.avatar) return;
+    if (!user.name || !user.avatar || user.id || socketConnection) return;
 
     console.log(
       "SOCKET_URL: ",
@@ -49,19 +59,26 @@ const useSocket = ({
     );
 
     socket.on("connect", () => {
+      setUser({ ...user, id: socket.id });
       socket.emit("register user", {
         name: user.name,
         avatar: user.avatar,
+        id: socket.id,
       });
     });
 
+    socket.on("successful registration", ({ activeUsers }) => {
+      setActiveUsers(activeUsers);
+    });
+
     socket.on(
-      "broadcast user status change",
+      "user status change",
       ({ user, exiting }: { user: User; exiting: boolean }) => {
         setGlobalMessages((prev) => [
           ...prev,
           {
             user,
+            type: "global",
             timestamp: Date.now(),
             exiting,
           },
@@ -69,8 +86,10 @@ const useSocket = ({
       }
     );
 
-    socket.on("broadcast global message", (message) => {
-      setGlobalMessages((prev) => [...prev, message]);
+    socket.on("message", (message: Message) => {
+      if (message.type === "global") {
+        setGlobalMessages((prev) => [...prev, message]);
+      }
     });
 
     socket.on("connect_error", (error) => {
@@ -79,7 +98,7 @@ const useSocket = ({
     });
 
     socket.on("error", (error) => {
-      console.error("Socket Error:", error);
+      console.error("SocketConnection Error:", error);
       setSocketError(error.message);
     });
 
@@ -88,18 +107,26 @@ const useSocket = ({
         ...prev,
         {
           user,
+          type: "global",
           timestamp: Date.now(),
           exiting: true,
         },
       ]);
+      setUser({});
+      setSocketConnection(null);
+      socket.close();
     });
 
     setSocketConnection(socket);
 
-    return () => {
-      socket.close();
-    };
-  }, [setGlobalMessages, setUser, user]);
+    // return () => {
+    //   socket.close();
+    // };
+  }, [setActiveUsers, setGlobalMessages, setUser, socketConnection, user]);
+
+  useEffect(() => {
+    if (!socketConnection || !user.id) return;
+  }, [setActiveUsers, setGlobalMessages, setUser, socketConnection, user]);
 
   return { socketConnection, socketError };
 };

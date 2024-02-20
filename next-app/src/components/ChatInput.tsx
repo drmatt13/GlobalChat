@@ -1,5 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, useEffect, useRef, useContext, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+  use,
+} from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 // context
@@ -17,10 +24,10 @@ import Message from "@/types/messageType";
 // styles
 import styles from "@/styles/scrollbar.module.scss";
 
-function extractURLs(text: string): string[] {
-  const urlRegex = /https?:\/\/[^\s]+/g;
-  const urls = text.match(urlRegex);
-  return urls ? urls : [];
+function extractURL(text: string): string | undefined {
+  const urlRegex = /https?:\/\/[^\s]+/;
+  const match = text.match(urlRegex);
+  return match ? match[0] : undefined;
 }
 
 const ChatInput = ({
@@ -29,18 +36,25 @@ const ChatInput = ({
   scrollToBottom,
   scrollContainerRef,
   scrollBarWidth,
+  imageScrollDown,
+  setImageScrollDown,
 }: {
   submitMessage: (message: Message) => void;
   scrollIsAtBottom: boolean;
   scrollToBottom: (behavior: "smooth" | "instant") => void;
   scrollContainerRef: React.RefObject<HTMLDivElement>;
   scrollBarWidth: number;
+  imageScrollDown: boolean;
+  setImageScrollDown: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { user, darkMode, globalMessages, mobile } = useContext(AppContext);
+  const { user, darkMode, globalMessages, mobile, modal } =
+    useContext(AppContext);
 
   const [text, setText] = useState<string>("");
 
   const [focused, setFocused] = useState(false);
+  const [scrollIsAtBottomDelay, setScrollIsAtBottomDelay] = useState(false);
+  const scrollIsAtBottomDelayTimeoutRef = useRef<NodeJS.Timeout>();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -57,26 +71,37 @@ const ChatInput = ({
   const onSubmit = useCallback(() => {
     if (!/[^\s]/.test(textareaRef.current?.value as string) && !image) return;
 
-    const urls = extractURLs(text);
-
-    console.log({
-      text: text.trim(),
-      timestamp: Date.now(),
-      user: user!,
-      image,
-      urls,
-    });
+    const url = extractURL(text);
 
     submitMessage({
       text: text.trim(),
       timestamp: Date.now(),
+      type: "global",
       user: user!,
       image,
-      urls,
+      url,
     });
     setText("");
     removeImage();
   }, [image, removeImage, submitMessage, text, user]);
+
+  const scrollToBottomForNewMessage = useCallback(() => {
+    const scrollContainer = scrollContainerRef.current;
+    const textareaContainer = textareaRef.current;
+    if (!scrollContainer || !textareaContainer) return;
+
+    if (
+      scrollContainer.lastChild instanceof Element &&
+      scrollContainer.scrollHeight -
+        scrollContainer.clientHeight -
+        scrollContainer.scrollTop <
+        (scrollContainer.lastChild as Element).clientHeight +
+          textareaContainer.clientHeight +
+          40
+    ) {
+      scrollToBottom("instant");
+    }
+  }, [scrollContainerRef, scrollToBottom]);
 
   useEffect(() => {
     const input = imageInputRef.current;
@@ -100,6 +125,11 @@ const ChatInput = ({
   }, [image]);
 
   useEffect(() => {
+    if (image)
+      imageInputRef.current?.value && (imageInputRef.current.value = "");
+  }, [image]);
+
+  useEffect(() => {
     const textareaContainer = textareaRef.current;
     if (!textareaContainer) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -115,29 +145,42 @@ const ChatInput = ({
   }, [onSubmit]);
 
   useEffect(() => {
-    if (image)
-      imageInputRef.current?.value && (imageInputRef.current.value = "");
-  }, [image]);
+    if (scrollIsAtBottom) {
+      setScrollIsAtBottomDelay(true);
+    } else {
+      scrollIsAtBottomDelayTimeoutRef.current = setTimeout(() => {
+        setScrollIsAtBottomDelay(false);
+      }, 300);
+    }
+    return () => {
+      clearTimeout(scrollIsAtBottomDelayTimeoutRef.current as NodeJS.Timeout);
+    };
+  }, [scrollIsAtBottom]);
 
   useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    const textareaContainer = textareaRef.current;
-    if (!scrollContainer || !textareaContainer) return;
+    // on screen resize suchh as mobile keyboard opening then scroll to bottom, use event listener
+    const handleResize = () => {
+      mobile &&
+        scrollIsAtBottomDelay &&
+        modal !== "search" &&
+        scrollToBottom("instant");
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [mobile, modal, scrollIsAtBottomDelay, scrollToBottom]);
 
-    if (
-      scrollContainer.lastChild instanceof Element &&
-      scrollContainer.scrollHeight -
-        scrollContainer.clientHeight -
-        scrollContainer.scrollTop <
-        (scrollContainer.lastChild as Element).clientHeight +
-          textareaContainer.clientHeight +
-          25
-    ) {
-      scrollToBottom("instant");
-    }
+  useEffect(() => {
+    scrollToBottomForNewMessage();
     const audio = new Audio("/discord-notification.mp3");
     audio.play();
-  }, [scrollContainerRef, scrollToBottom, globalMessages]);
+  }, [globalMessages, scrollToBottomForNewMessage]);
+
+  useEffect(() => {
+    if (imageScrollDown) {
+      scrollToBottom("instant");
+      setImageScrollDown(false);
+    }
+  }, [imageScrollDown, scrollToBottom, setImageScrollDown]);
 
   return (
     <>
@@ -205,7 +248,7 @@ const ChatInput = ({
             <img
               src={image}
               alt="preview"
-              className={`aspect-square w-16 object-cover object-center rounded-md select-none border border-black/25 dark:border-white/10 will-change-transform`}
+              className={`aspect-square w-16 object-cover object-center rounded-md select-none border border-black/25 dark:border-white/25 will-change-transform bg-white dark:bg-zinc-700`}
               onError={removeImage}
             />
           </div>

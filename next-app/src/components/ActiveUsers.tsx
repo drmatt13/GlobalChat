@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 // components
 import RightMenu from "./RightMenu";
@@ -7,7 +7,13 @@ import RightMenu from "./RightMenu";
 import AppContext from "@/context/AppContext";
 
 const ActiveUsers = () => {
-  const { modal, setModal } = useContext(AppContext);
+  const { modal, setModal, activeUsers } = useContext(AppContext);
+
+  useEffect(() => {
+    if (modal === "active users") {
+      console.log(activeUsers);
+    }
+  }, [activeUsers, modal]);
 
   return (
     <RightMenu

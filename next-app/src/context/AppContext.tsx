@@ -44,6 +44,29 @@ interface AppContextInterface {
       | undefined
     >
   >;
+  activeUsers: {
+    [key: string]: {
+      name: string;
+      avatar: string;
+      id: string;
+    };
+  };
+  setActiveUsers: Dispatch<
+    SetStateAction<{
+      [key: string]: {
+        name: string;
+        avatar: string;
+        id: string;
+      };
+    }>
+  >;
+  chat: {
+    type: "global" | "private";
+    id?: string | undefined;
+  };
+  setChat: Dispatch<
+    SetStateAction<{ type: "global" | "private"; id?: string | undefined }>
+  >;
 }
 
 const AppContext = createContext<AppContextInterface>({
@@ -63,6 +86,10 @@ const AppContext = createContext<AppContextInterface>({
   setPrivateMessages: () => {},
   socketConnection: null,
   initialLoad: true,
+  activeUsers: {},
+  setActiveUsers: () => {},
+  chat: { type: "global" },
+  setChat: () => {},
 });
 
 export default AppContext;

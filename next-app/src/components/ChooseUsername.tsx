@@ -39,7 +39,7 @@ const ChooseUsername = () => {
           initialLoad
             ? "opacity-0 pointer-events-none"
             : "opacity-100 pointer-events-auto"
-        } absolute top-0 w-full h-dvh flex flex-col items-center pt-56 sm:pt-0 sm:justify-center transition-opacity`}
+        } absolute top-0 w-full h-full flex flex-col items-center pt-56 sm:pt-0 sm:justify-center transition-opacity`}
       >
         <form onSubmit={onSubmit}>
           <div>
@@ -69,6 +69,7 @@ const ChooseUsername = () => {
                     } bg-blue-500 dark:bg-blue-600 text-white cursor-pointer`
                   : "bg-black/30 dark:bg-neutral-600 dark:opacity-60 dark:text-black cursor-not-allowed"
               } mt-2.5 rounded-md w-full h-12 transition-colors`}
+              value={"Set Username"}
             ></input>
           </div>
         </form>

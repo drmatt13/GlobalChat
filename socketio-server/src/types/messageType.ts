@@ -1,4 +1,4 @@
-import type User from "@/types/userType";
+import type User from "./userType";
 
 interface Message {
   user: User;

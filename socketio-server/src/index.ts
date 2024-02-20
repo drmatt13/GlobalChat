@@ -5,6 +5,10 @@ import { Server } from "socket.io";
 import { config } from "dotenv";
 import ogs from "open-graph-scraper";
 
+// types
+import type Message from "./types/messageType";
+import type User from "./types/userType";
+
 config();
 
 // const options = {
@@ -22,25 +26,21 @@ const io = new Server(httpServer, {
 });
 
 const activeUsers: {
-  [key: string]: {
-    name: string;
-    avatar: string;
-    id: string;
-  };
+  [key: string]: User;
 } = {};
 
 io.on("connection", (socket) => {
-  socket.on("register user", (user) => {
+  socket.on("register user", (user: User) => {
     if (activeUsers[socket.id]) {
       return;
     }
-    activeUsers[socket.id] = { ...user, id: socket.id };
-    io.emit("broadcast user status change", {
+    activeUsers[socket.id] = { ...user };
+    io.emit("user status change", {
       user: activeUsers[socket.id],
     });
   });
 
-  socket.on("global message", async (message) => {
+  socket.on("message", async (message: Message) => {
     if (
       !activeUsers[socket.id] ||
       (!message.text && !message.image && !message.url)
@@ -48,10 +48,10 @@ io.on("connection", (socket) => {
       return;
     }
 
-    if ((message.urls as string[]).length > 0 && !message.image) {
+    if (message.url && !message.image) {
       try {
         const { result, error } = await ogs({
-          url: message.urls[0],
+          url: message.url,
         });
 
         if (error) {
@@ -60,7 +60,12 @@ io.on("connection", (socket) => {
 
         message.og = {
           description: result.ogDescription,
-          image: result.ogImage,
+          image: result.ogImage as {
+            url: string;
+            width: number;
+            height: number;
+            type: string;
+          }[],
           siteName: result.ogSiteName,
           title: result.ogTitle,
           url: result.requestUrl,
@@ -72,7 +77,7 @@ io.on("connection", (socket) => {
 
     // if (message.image) console.log(message.image);
 
-    io.emit("broadcast global message", message);
+    io.emit("message", message);
   });
 
   socket.on("disconnect", () => {

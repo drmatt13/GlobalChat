@@ -10,13 +10,21 @@ import AppContext from "@/context/AppContext";
 // types
 import Message from "@/types/messageType";
 
-const GlobalChat = () => {
+const GlobalChat = ({
+  type,
+  id,
+}: {
+  type: "global" | "private";
+  id?: string;
+}) => {
   const { socketConnection, globalMessages } = useContext(AppContext);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [scrollIsAtBottom, setScrollIsAtBottom] = useState<boolean>(true);
   const [scrollbarWidth, setScrollbarWidth] = useState<number>(0);
+
+  const [imageScrollDown, setImageScrollDown] = useState<boolean>(false);
 
   const scrollToBottom = useCallback((behavior: "smooth" | "instant") => {
     const scrollContainer = scrollContainerRef.current;
@@ -60,48 +68,43 @@ const GlobalChat = () => {
   }, [scrollToBottom]);
 
   useEffect(() => {
-    setTimeout(() => {
-      scrollToBottom("instant");
-    }, 10);
-    setTimeout(() => {
-      scrollToBottom("instant");
-    }, 25);
-    setTimeout(() => {
-      scrollToBottom("instant");
-    }, 50);
-    setTimeout(() => {
-      scrollToBottom("instant");
-    }, 100);
-  }, [scrollToBottom]);
+    if (globalMessages.length > 0) {
+      const lastMessage = globalMessages[globalMessages.length - 1];
+      if (lastMessage.user.id === socketConnection?.id) {
+        scrollToBottom("instant");
+      }
+    }
+  }, [scrollToBottom, globalMessages, socketConnection?.id]);
 
   const submitMessage = useCallback(
-    (message: Message) => {
-      socketConnection?.emit("global message", message);
-      scrollToBottom("instant");
-    },
-    [scrollToBottom, socketConnection]
+    (message: Message) => socketConnection?.emit("message", message),
+    [socketConnection]
   );
 
   return (
-    <div className="relative flex-1 flex justify-center overflow-clip">
-      <div className="h-full w-full flex flex-col ">
+    <div className="relative flex-1 flex justify-center overflow-hidden">
+      <div className="w-full flex flex-col">
         <div
           className="w-full flex-1 flex flex-col overflow-y-scroll px-4 pb-1"
           ref={scrollContainerRef}
         >
           {globalMessages.map((message, index) => (
-            <ChatMessage message={message} key={index} />
+            <ChatMessage
+              message={message}
+              setImageScrollDown={setImageScrollDown}
+              key={index}
+            />
           ))}
         </div>
-        <div className="w-full shrink-0 z-10">
-          <ChatInput
-            submitMessage={submitMessage}
-            scrollIsAtBottom={scrollIsAtBottom}
-            scrollToBottom={scrollToBottom}
-            scrollContainerRef={scrollContainerRef}
-            scrollBarWidth={scrollbarWidth}
-          />
-        </div>
+        <ChatInput
+          submitMessage={submitMessage}
+          scrollIsAtBottom={scrollIsAtBottom}
+          scrollToBottom={scrollToBottom}
+          scrollContainerRef={scrollContainerRef}
+          scrollBarWidth={scrollbarWidth}
+          imageScrollDown={imageScrollDown}
+          setImageScrollDown={setImageScrollDown}
+        />
       </div>
     </div>
   );

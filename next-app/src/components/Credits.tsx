@@ -10,7 +10,7 @@ const Credits = () => {
     <div
       className={`${
         modal === "credits" ? "pointer-events-auto" : "pointer-events-none"
-      } absolute w-screen h-lvh flex justify-center md:justify-start items-start z-20`}
+      } absolute w-full h-lvh flex justify-start items-start z-20 overflow-hidden`}
     >
       <div
         className={`${
@@ -24,11 +24,17 @@ const Credits = () => {
         className={`${
           modal === "credits"
             ? "opacity-100 ease-out duration-500"
-            : "opacity-0 -translate-y-96 md:translate-y-0 md:-translate-x-full ease-in duration-300"
-        } z-10 w-[90%] max-w-96 ml-0 md:ml-8 mt-[5%] md:mt-8 transition-all bg-white/85 dark:bg-zinc-800/85 rounded-lg shadow-lg p-5 text-sm text-center border border-white/50 dark:border-black/40 backdrop-blur`}
+            : "opacity-0 -translate-x-full ease-in duration-300"
+        } z-10 w-max ml-5 mt-5 transition-all bg-white/85 dark:bg-zinc-800/85 rounded-lg shadow-lg pl-5 pr-9 py-5 border border-white/50 dark:border-black/40 backdrop-blur`}
       >
-        <p>Created by Matthew Sweeney</p>
-        <div className="mt-1 text-xs">
+        <p className="text-sm sm:text-md">Created by Matthew Sweeney</p>
+        <p className="mt-6 text-xs sm:text-sm underline opacity-75">
+          created and deployed with:
+        </p>
+        <p className="mt-1 text-xs text-yellow-600 dark:text-yellow-500/80">
+          Next.js 14, Tailwind, Socket.IO, Docker, AWS
+        </p>
+        <div className="mt-6 text-xs sm:text-sm">
           <a
             href="https://matts-projects.vercel.app"
             className={`${
@@ -40,12 +46,6 @@ const Credits = () => {
             check out more of my work
           </a>
         </div>
-        <p className="mt-16 text-xs underline opacity-75">
-          created and deployed with:
-        </p>
-        <p className="mt-1 text-xs opacity-75">
-          Next.js 14, Tailwind, Socket.IO, Docker, AWS
-        </p>
       </div>
     </div>
   );

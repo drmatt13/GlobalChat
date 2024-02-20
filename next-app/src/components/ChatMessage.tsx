@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useContext, Fragment } from "react";
+import { useContext, Fragment, SetStateAction, Dispatch } from "react";
 
 // context
 import AppContext from "@/context/AppContext";
@@ -24,12 +24,18 @@ const isValidUrl = (string: string): boolean => {
   }
 };
 
-const ChatMessage = ({ message }: { message: Message }) => {
+const ChatMessage = ({
+  message,
+  setImageScrollDown,
+}: {
+  message: Message;
+  setImageScrollDown: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { setFullScreenImage, mobile } = useContext(AppContext);
 
   return (
     <div className="flex mt-2.5 sm:mt-3 w-full">
-      {!message.image && !message.text && !message.urls ? (
+      {!message.image && !message.text && !message.url ? (
         <p className="text-xs sm:text-sm">
           {message.exiting ? (
             <>
@@ -123,11 +129,12 @@ const ChatMessage = ({ message }: { message: Message }) => {
             {message.image && (
               <img
                 src={message.image}
-                alt="uploaded"
+                alt="user uploaded image"
                 className={`${
                   message.text && "mt-2"
-                } max-w-full max-h-56 sm:max-h-80 rounded-lg cursor-pointer bg-white dark:bg-zinc-700 shadow-sm`}
+                } max-w-full max-h-52 rounded-lg cursor-pointer bg-white dark:bg-zinc-700 shadow-sm`}
                 onClick={() => setFullScreenImage(message.image!)}
+                onLoad={() => setImageScrollDown(true)}
               />
             )}
 

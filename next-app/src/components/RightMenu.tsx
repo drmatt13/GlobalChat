@@ -13,7 +13,7 @@ const RightMenu = ({
     <div
       className={`${
         active ? "pointer-events-auto" : "pointer-events-none"
-      } absolute w-screen h-lvh z-20 flex justify-end overflow-hidden`}
+      } absolute w-full h-lvh z-20 flex justify-end overflow-hidden`}
     >
       <div
         className={`${

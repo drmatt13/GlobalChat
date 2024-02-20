@@ -34,13 +34,13 @@ const Navbar = () => {
           <i
             className={`${
               darkMode ? "fa-moon text-purple-500" : "fa-sun text-yellow-600"
-            } fa-solid text-lg`}
+            } fa-solid lg:text-xl`}
           />
         </button>
       )}
     </div>
   ) : (
-    <div className="h-14 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-5 select-none">
+    <div className="h-14 lg:h-16 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-5 select-none">
       <div className="h-full flex items-center">
         <div
           className={`${
@@ -48,71 +48,77 @@ const Navbar = () => {
           } flex group cursor-pointer opacity-80 transition-opacity`}
           onClick={() => setModal("credits")}
         >
-          <div className="hidden sm:block mr-[.6rem]">
-            <img className="w-[1.4rem]" src="/socketio.png" alt="logo" />
+          <div className="hidden sm:block mr-[.6rem] lg:mr-[.65rem]">
+            <img
+              className="w-[1.4rem] lg:w-[1.7rem]"
+              src="/socketio.png"
+              alt="logo"
+            />
           </div>
-          <div>SocketChat</div>
+          <div className="lg:text-xl">SocketChat</div>
         </div>
       </div>
       <div className="flex">
-        <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
+        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
             } relative cursor-pointer text-white/80 transition-colors`}
             onClick={() => setModal("messages")}
           >
-            <span className="block md:hidden">
-              <i className={`fa-regular fa-comment text-lg`} />
-              <div className="w-3 h-3 md:w-[.8rem] md:h-[.8rem] bg-red-600 dark:bg-red-700 absolute -top-1 md:-top-1.5 right-1.5 md:-right-0.5 rounded-full animate-cart-bounce flex justify-center items-center text-[.5rem] md:text-[.55rem] font-extrabold md:font-bold dark:text-black">
-                <div>2</div>
+            <span className="block">
+              <i className={`fa-regular fa-comment lg:text-xl`} />
+              <div className="border-[1.5px] sm:border-2 border-blue-600 dark:border-black w-[1.125rem] h-[1.125rem] bg-red-600 dark:bg-red-500/75 backdrop-blur absolute -top-1.5 sm:-top-2 right-2 rounded-full animate-cart-bounce flex justify-center items-center">
+                <div className="text-[.55rem] sm:text-[.65rem] font-extrabold md:font-bold text-white dark:text-black">
+                  2
+                </div>
               </div>
             </span>
-            <span className="hidden md:block z-10">conversations</span>
+            <span className="hidden /md:block z-10">conversations</span>
           </div>
         </div>
-        <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
+        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
             } cursor-pointer text-white/80 transition-colors`}
             onClick={() => setModal("active users")}
           >
-            <span className="relative block md:hidden">
-              <div className="w-[.3rem] h-[.3rem] bg-green-500 absolute -top-0.5 right-0 translate-x-full rounded-full" />
-              <i className={`fa-regular fa-user text-lg`} />
+            <span className="relative block">
+              <div className="w-[.3rem] h-[.3rem] bg-green-500 absolute sm:-top-0.5 right-0 translate-x-full rounded-full" />
+              <i className={`fa-regular fa-user lg:text-xl`} />
             </span>
-            <span className="hidden md:block">connected users</span>
+            <span className="hidden /md:block">connected users</span>
           </div>
         </div>
 
-        <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
+        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
             } cursor-pointer text-white/80 transition-colors`}
             onClick={() => setModal("search")}
           >
-            <span className="block md:hidden">
-              <i className={`fa-solid fa-magnifying-glass text-lg`} />
+            <span className="block">
+              <i className={`fa-solid fa-magnifying-glass lg:text-xl`} />
             </span>
-            <span className="hidden md:block">search</span>
+            <span className="hidden /md:block">search</span>
           </div>
         </div>
-        <div className="h-full flex items-center px-4 xl:px-5 md:text-xs lg:text-sm xl:text-base">
+        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
             } cursor-pointer text-white/80 transition-colors`}
             onClick={() => setModal("new session")}
           >
-            <span className="block md:hidden">
-              <i className={`fa-solid fa-shuffle text-lg`} />
+            <span className="block">
+              <i className={`fa-solid fa-shuffle lg:text-xl`} />
             </span>
-            <span className="hidden md:block">new session</span>
+            <span className="hidden /md:block">new session</span>
           </div>
         </div>
-        <div className="h-full flex items-center pl-4 xl:pl-5 md:text-base lg:text-base xl:text-base">
+        <div className="h-full flex items-center pl-4 md:pl-5 lg:pl-6">
           <div className="w-5 flex justify-center items-center">
             <i
               onClick={toggleDarkMode}
@@ -128,7 +134,7 @@ const Navbar = () => {
                         ? "active:text-yellow-600"
                         : "hover:text-yellow-600"
                     } fa-sun`
-              } fa-solid /lg:text-sm xl:text-lg cursor-pointer text-white/80 transition-all`}
+              } fa-solid lg:text-xl cursor-pointer text-white/80 transition-all`}
             />
           </div>
         </div>

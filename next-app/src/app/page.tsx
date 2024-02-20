@@ -11,7 +11,7 @@ import NewSession from "@/components/NewSession";
 import ChooseUsername from "@/components/ChooseUsername";
 import ChooseAvatar from "@/components/ChooseAvatar";
 import Navbar from "@/components/Navbar";
-import GlobalChat from "@/components/GlobalChat";
+import Chat from "@/components/Chat";
 import FullScreenImage from "@/components/FullScreenImage";
 
 // context
@@ -28,9 +28,13 @@ export default function Home() {
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [mobile, setMobile] = useState<boolean>(false);
-
-  const [credits, setCredits] = useState<boolean>(false);
-  const [searching, setSearching] = useState<boolean>(false);
+  const [activeUsers, setActiveUsers] = useState<{
+    [key: string]: {
+      name: string;
+      avatar: string;
+      id: string;
+    };
+  }>({});
 
   const [modal, setModal] = useState<
     | "credits"
@@ -42,6 +46,11 @@ export default function Home() {
   >(undefined);
 
   const [user, setUser] = useState<User>({});
+
+  const [chat, setChat] = useState<{
+    type: "global" | "private";
+    id?: string;
+  }>({ type: "global" });
 
   const [fullScreenImage, setFullScreenImage] = useState<string>("");
 
@@ -55,6 +64,7 @@ export default function Home() {
     setUser,
     setGlobalMessages,
     setPrivateMessages,
+    setActiveUsers,
   });
 
   const toggleDarkMode = useCallback(() => {
@@ -117,28 +127,47 @@ export default function Home() {
           mobile,
           socketConnection,
           initialLoad,
+          activeUsers,
+          setActiveUsers,
+          chat,
+          setChat,
         }}
       >
-        <div className="relative h-screen bg-gray-200 dark:bg-zinc-800 dark:text-white overflow-hidden">
-          <FullScreenImage />
-          <Credits />
-          <Messages />
-          <ActiveUsers />
-          <NewSession />
-          <Search />
-          <div className="relative w-screen h-dvh flex flex-col overflow-hidden">
-            <Navbar />
-            {!user.name ? (
-              <ChooseUsername />
-            ) : !user.avatar ? (
-              <ChooseAvatar />
-            ) : socketError ? (
-              <div>error</div>
-            ) : !socketConnection ? (
-              <div>connecting...</div>
-            ) : (
-              <GlobalChat />
-            )}
+        <div
+          className={`h-screen relative bg-gray-200 dark:bg-zinc-800 dark:text-white`}
+        >
+          <div className="sticky top-0">
+            <FullScreenImage />
+            <Credits />
+            <Messages />
+            <ActiveUsers />
+            <NewSession />
+            <Search />
+            <div className="relative w-full h-dvh flex flex-col justify-start overflow-y-hidden">
+              <Navbar />
+              {!user.name ? (
+                <ChooseUsername />
+              ) : !user.avatar ? (
+                <ChooseAvatar />
+              ) : socketError ? (
+                <div>error</div>
+              ) : !socketConnection ? (
+                <div>connecting...</div>
+              ) : (
+                <>
+                  <div
+                    className={`${
+                      chat.type !== "global" && "hidden"
+                    } h-dvh flex-1 flex flex-col justify-start overflow-y-hidden`}
+                  >
+                    <Chat type="global" />
+                  </div>
+                  {chat.type === "private" && chat.id && (
+                    <Chat type="private" id={chat.id} />
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </AppContext.Provider>
