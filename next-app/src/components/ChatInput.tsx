@@ -1,12 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  useCallback,
-  use,
-} from "react";
+import { useState, useEffect, useRef, useContext, useCallback } from "react";
+
 import TextareaAutosize from "react-textarea-autosize";
 
 // context

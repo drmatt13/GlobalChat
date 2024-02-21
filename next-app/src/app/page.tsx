@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useLayoutEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Cookies from "js-cookie";
 
 // components
@@ -134,15 +134,19 @@ export default function Home() {
         }}
       >
         <div
-          className={`h-screen relative bg-gray-200 dark:bg-zinc-800 dark:text-white`}
+          className={`h-full relative bg-gray-200 dark:bg-zinc-800 dark:text-white`}
         >
           <div className="sticky top-0">
-            <FullScreenImage />
-            <Credits />
-            <Messages />
-            <ActiveUsers />
-            <NewSession />
-            <Search />
+            {user.id && (
+              <>
+                <Credits />
+                <Messages />
+                <ActiveUsers />
+                <Search />
+                <NewSession />
+                <FullScreenImage />
+              </>
+            )}
             <div className="relative w-full h-dvh flex flex-col justify-start overflow-y-hidden">
               <Navbar />
               {!user.name ? (
@@ -158,7 +162,7 @@ export default function Home() {
                   <div
                     className={`${
                       chat.type !== "global" && "hidden"
-                    } h-dvh flex-1 flex flex-col justify-start overflow-y-hidden`}
+                    } h-full flex flex-col justify-start overflow-y-hidden`}
                   >
                     <Chat type="global" />
                   </div>

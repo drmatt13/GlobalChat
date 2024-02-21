@@ -67,13 +67,23 @@ const useSocket = ({
       });
     });
 
-    socket.on("successful registration", ({ activeUsers }) => {
-      setActiveUsers(activeUsers);
-    });
+    socket.on("update active users", (activeUsers) =>
+      setActiveUsers(activeUsers)
+    );
 
     socket.on(
       "user status change",
       ({ user, exiting }: { user: User; exiting: boolean }) => {
+        if (!user.id) return;
+        if (exiting) {
+          setActiveUsers((prev) => {
+            const newActiveUsers = { ...prev };
+            delete newActiveUsers[user.id!];
+            return newActiveUsers;
+          });
+        } else {
+          setActiveUsers((prev) => ({ ...prev, [user.id as any]: user }));
+        }
         setGlobalMessages((prev) => [
           ...prev,
           {

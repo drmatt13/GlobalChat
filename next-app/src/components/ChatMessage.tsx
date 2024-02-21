@@ -31,7 +31,7 @@ const ChatMessage = ({
   message: Message;
   setImageScrollDown: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { setFullScreenImage, mobile } = useContext(AppContext);
+  const { setFullScreenImage, mobile, activeUsers } = useContext(AppContext);
 
   return (
     <div className="flex mt-2.5 sm:mt-3 w-full">
@@ -61,11 +61,24 @@ const ChatMessage = ({
         </p>
       ) : (
         <>
-          <img
-            className="h-8 w-8 sm:w-10 sm:h-10 rounded-full cursor-pointer shadow-xl"
-            src={`data:image/jpg;base64, ${avatarList[message.user?.avatar!]}`}
-            alt="sdf"
-          />
+          <div className="relative">
+            <img
+              className="h-8 w-8 sm:w-10 sm:h-10 rounded-full cursor-pointer shadow-xl"
+              src={`data:image/jpg;base64, ${
+                avatarList[message.user?.avatar!]
+              }`}
+              alt="user avatar"
+            />
+
+            <div
+              className={`${
+                activeUsers[message.user.id!]
+                  ? "bg-green-500 dark:border-green-600 dark:border-2"
+                  : "bg-red-500 border-red-900 dark:border-red-800"
+              } absolute top-7 sm:top-8 right-[.12rem] w-[.4rem] h-[.4rem] sm:w-[.575rem] sm:h-[.575rem] rounded-full border  border-black `}
+              title="active"
+            />
+          </div>
           <div
             className="ml-2 flex flex-col items-start"
             style={{
@@ -161,6 +174,7 @@ const ChatMessage = ({
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
                       }}
+                      onLoad={() => setImageScrollDown(true)}
                     />
                   )}
                   <div className="flex-1 text-left p-2 overflow-hidden text-xs bg-white dark:bg-zinc-700 shadow-sm text-neutral-700 dark:text-neutral-200 cursor-pointer">

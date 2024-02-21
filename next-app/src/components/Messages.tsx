@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 // components
-import RightMenu from "./RightMenu";
+import ModalMenu from "./ModalMenu";
 
 // context
 import AppContext from "@/context/AppContext";
@@ -10,12 +10,13 @@ const Messages = () => {
   const { modal, setModal } = useContext(AppContext);
 
   return (
-    <RightMenu
+    <ModalMenu
       active={modal === "messages"}
       closeMenu={() => setModal(undefined)}
+      side="right"
     >
       messages
-    </RightMenu>
+    </ModalMenu>
   );
 };
 

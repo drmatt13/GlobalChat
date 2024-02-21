@@ -38,6 +38,7 @@ io.on("connection", (socket) => {
     io.emit("user status change", {
       user: activeUsers[socket.id],
     });
+    io.to(socket.id).emit("update active users", activeUsers);
   });
 
   socket.on("message", async (message: Message) => {
@@ -75,13 +76,11 @@ io.on("connection", (socket) => {
       }
     }
 
-    // if (message.image) console.log(message.image);
-
     io.emit("message", message);
   });
 
   socket.on("disconnect", () => {
-    io.emit("broadcast user status change", {
+    io.emit("user status change", {
       exiting: true,
       user: activeUsers[socket.id],
     });

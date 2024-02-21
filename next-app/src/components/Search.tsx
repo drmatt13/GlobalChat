@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 
 // components
-import RightMenu from "./RightMenu";
+import ModalMenu from "./ModalMenu";
 
 // context
 import AppContext from "@/context/AppContext";
@@ -21,11 +21,12 @@ const Search = () => {
   }, [modal]);
 
   return (
-    <RightMenu
+    <ModalMenu
       active={modal === "search"}
       closeMenu={() => setModal(undefined)}
+      side="right"
     >
-      <div className="p-5">
+      <div className="min-w-56 w-[75vw] max-w-96 p-4 sm:p-5">
         <input
           ref={inputRef}
           type="text"
@@ -33,10 +34,10 @@ const Search = () => {
           placeholder="Search..."
         />
       </div>
-      <div className="overflow-y-auto flex-1 px-5 pb-5 flex">
-        <div className="flex-1 /bg-white/10"></div>
+      <div className="overflow-y-auto flex-1 flex">
+        <div className="flex-1 bg-white/10"></div>
       </div>
-    </RightMenu>
+    </ModalMenu>
   );
 };
 

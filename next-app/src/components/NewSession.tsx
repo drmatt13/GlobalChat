@@ -1,5 +1,8 @@
 import { useContext, useCallback } from "react";
 
+// components
+import ModalMenu from "@/components/ModalMenu";
+
 // context
 import AppContext from "@/context/AppContext";
 
@@ -15,34 +18,57 @@ const NewSession = () => {
   }, [setModal, setPrivateMessages, setUser, socketConnection]);
 
   return (
-    <div
-      className={`${
-        modal === "new session" ? "pointer-events-auto" : "pointer-events-none"
-      } absolute w-full h-lvh flex justify-center md:justify-end items-start z-20 overflow-hidden`}
+    <ModalMenu
+      active={modal === "new session"}
+      closeMenu={() => setModal(undefined)}
+      side="right"
     >
-      <div
-        className={`${
-          modal === "new session"
-            ? "opacity-100 duration-500 ease-out"
-            : "opacity-0 duration-300 ease-in"
-        }  absolute w-full h-[200vh] bg-black/20 dark:bg-black/60 backdrop-blur transition-opacity`}
-        onClick={() => setModal(undefined)}
-      />
-      <div
-        className={`${
-          modal === "new session"
-            ? "opacity-100 ease-out duration-500"
-            : "opacity-0 -translate-y-96 md:translate-y-0 md:translate-x-full ease-in duration-300"
-        } z-10 w-[90%] max-w-96 mr-0 md:mr-8 mt-[5%] md:mt-8 transition-all bg-white/85 dark:bg-zinc-800/85 rounded-lg shadow-lg p-5 text-sm border border-white/50 dark:border-black/40 backdrop-blur`}
-      >
+      <div className="flex flex-col p-4 sm:p-5">
         <button
-          className="py-2 px-3 bg-white rounded-lg border border-black/50 dark:text-black"
-          onClick={newSession}
+          onClick={() => setModal(undefined)}
+          className="
+          w-full
+          py-2
+          px-7
+          mb-3
+          rounded-md
+          text-xs
+          md:text-sm
+          bg-blue-500
+          text-white
+          dark:bg-blue-600/80
+          dark:text-white/90
+          hover:bg-blue-600
+          dark:hover:bg-blue-600
+          dark:hover:text-white
+          transition-colors
+        "
         >
-          click me
+          Return to chat
+        </button>
+        <button
+          onClick={newSession}
+          className="
+          w-full
+          py-2
+          px-7
+          rounded-md
+          text-xs
+          md:text-sm
+          bg-red-500
+          text-white
+          dark:bg-red-600/80
+          dark:text-white/90
+          hover:bg-red-600
+          dark:hover:bg-red-600
+          dark:hover:text-white
+          transition-colors
+        "
+        >
+          Delete session
         </button>
       </div>
-    </div>
+    </ModalMenu>
   );
 };
 

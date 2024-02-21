@@ -8,12 +8,12 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SocketChat",
   description: "A simple chat app using Next.js and Socket.IO deployed on AWS",
-  openGraph: {
-    title: "SocketChat",
-    description: "A live chat app using Next.js and Socket.io deployed on AWS",
-    type: "website",
-    images: "/opengraph-image.png",
-  },
+  // openGraph: {
+  //   title: "SocketChat",
+  //   description: "A live chat app using Next.js and Socket.io deployed on AWS",
+  //   type: "website",
+  //   images: "/opengraph-image.png",
+  // },
 };
 
 export default function RootLayout({
@@ -33,13 +33,17 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
       </head>
       <body
         className={`${inter.className} ${
           cookieStore.get("darkMode") !== undefined &&
           cookieStore.get("darkMode")?.value === "true" &&
           "dark"
-        }`}
+        } h-screen`}
       >
         {children}
       </body>

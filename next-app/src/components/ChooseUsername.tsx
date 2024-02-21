@@ -39,7 +39,7 @@ const ChooseUsername = () => {
           initialLoad
             ? "opacity-0 pointer-events-none"
             : "opacity-100 pointer-events-auto"
-        } absolute top-0 w-full h-full flex flex-col items-center pt-56 sm:pt-0 sm:justify-center transition-opacity`}
+        } sticky top-0 w-full h-full flex flex-col items-center pt-56 sm:pt-0 sm:justify-center transition-opacity`}
       >
         <form onSubmit={onSubmit}>
           <div>
