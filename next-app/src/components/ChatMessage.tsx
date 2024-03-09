@@ -1,5 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { useContext, Fragment, SetStateAction, Dispatch } from "react";
+import {
+  useContext,
+  Fragment,
+  SetStateAction,
+  Dispatch,
+  useCallback,
+} from "react";
 
 // context
 import AppContext from "@/context/AppContext";
@@ -10,12 +16,11 @@ import avatarList from "@/data/avatarList";
 // types
 import Message from "@/types/messageType";
 
-const isValidUrl = (string: string): boolean => {
-  // Check if the string starts with "http://" or "https://"
-  if (!/^https?:\/\/.+/i.test(string)) {
-    return false;
-  }
+// lib
+import formatTimestampToTime from "@/lib/formatTimestampToTime";
 
+const isValidUrl = (string: string): boolean => {
+  if (!/^https?:\/\/.+/i.test(string)) return false;
   try {
     new URL(string);
     return true;
@@ -31,52 +36,93 @@ const ChatMessage = ({
   message: Message;
   setImageScrollDown: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { setFullScreenImage, mobile, activeUsers } = useContext(AppContext);
+  const {
+    setFullScreenImage,
+    mobile,
+    activeUsers,
+    setChatId,
+    updatePrivateMessages,
+  } = useContext(AppContext);
+
+  const updateChatId = useCallback(() => {
+    if (!message.sender.id) return;
+    updatePrivateMessages(message.sender);
+    setChatId(message.sender.id);
+  }, [message.sender, setChatId, updatePrivateMessages]);
 
   return (
-    <div className="flex mt-2.5 sm:mt-3 w-full">
-      {!message.image && !message.text && !message.url ? (
+    <div className="relative flex mt-2.5 sm:mt-3 w-max max-w-full group">
+      <div
+        className={`group-hover:opacity-100 group-hover:ease-in group-hover:duration-75 opacity-0 ease-out transition-opacity duration-150 absolute right-0 top-0 pl-3.5 h-full flex items-center translate-x-full pointer-events-none`}
+      >
+        <div className="h-max py-1.5 px-2 bg-white dark:bg-black/60 dark:text-white/75 rounded-lg text-xs shadow-xl">
+          {formatTimestampToTime(message.timestamp)}
+        </div>
+      </div>
+      {/* !message.image && !message.text && !message.url ? (
         <p className="text-xs sm:text-sm">
           {message.exiting ? (
-            <>
-              <span className="font-bold text-red-700 dark:text-red-600">
-                {message.user.name}
-              </span>{" "}
-              has left the chat
-            </>
+            <>has left the chat</>
           ) : (
             <>
               <span
+                onClick={updateChatId}
                 className={`${
                   mobile
                     ? "active:text-blue-500 dark:active:text-blue-400"
                     : "hover:text-blue-500 dark:hover:text-blue-400"
                 } font-bold text-blue-600 dark:text-blue-500 underline cursor-pointer`}
               >
-                {message.user.name}
+                {message.sender.name}
               </span>{" "}
               has joined the chat!
             </>
           )}
         </p>
+      ) */}
+      {/* mobile
+                  ? "active:text-red-600 dark:active:text-red-500"
+                  : "active:text-blue-500 dark:active:text-blue-400" */}
+      {!message.image && !message.text && !message.url ? (
+        <p className="text-xs sm:text-sm">
+          <span
+            onClick={updateChatId}
+            className={`${
+              !activeUsers[message.sender.id || ""]
+                ? `${
+                    mobile
+                      ? "active:text-red-600 dark:active:text-red-500"
+                      : "hover:text-red-600 dark:hover:text-red-500"
+                  } text-red-700 dark:text-red-600`
+                : `${
+                    mobile
+                      ? "active:text-blue-500 dark:active:text-blue-400"
+                      : "hover:text-blue-500 dark:hover:text-blue-400"
+                  } text-blue-600 dark:text-blue-500`
+            } font-bold underline cursor-pointer`}
+          >
+            {message.sender.name}
+          </span>{" "}
+          {message.exiting ? "has left the chat" : "has joined the chat!"}
+        </p>
       ) : (
         <>
           <div className="relative">
             <img
+              onClick={updateChatId}
               className="h-8 w-8 sm:w-10 sm:h-10 rounded-full cursor-pointer shadow-xl"
               src={`data:image/jpg;base64, ${
-                avatarList[message.user?.avatar!]
+                avatarList[message.sender?.avatar!]
               }`}
               alt="user avatar"
             />
 
             <div
               className={`${
-                activeUsers[message.user.id!]
+                activeUsers[message.sender.id!]
                   ? "bg-green-500 dark:border-green-600 dark:border-2"
                   : "bg-red-500 border-red-900 dark:border-red-800"
               } absolute top-7 sm:top-8 right-[.12rem] w-[.4rem] h-[.4rem] sm:w-[.575rem] sm:h-[.575rem] rounded-full border  border-black `}
-              title="active"
             />
           </div>
           <div
@@ -88,13 +134,14 @@ const ChatMessage = ({
             {message.text && (
               <div className="w-max max-w-full min-w-28 min-h-8 flex flex-col rounded-lg px-3 py-2 bg-white dark:bg-zinc-700 shadow">
                 <div
+                  onClick={updateChatId}
                   className={`${
                     mobile
                       ? "active:text-black active:opacity-100 dark:active:opacity-100"
                       : "hover:text-black hover:opacity-100 dark:hover:opacity-100"
-                  } w-max text-xs underline text-black/85 dark:text-white opacity-90 dark:opacity-75 cursor-pointer`}
+                  } w-max text-xs underline text-black/85 dark:text-white opacity-90 dark:opacity-75 cursor-pointer pr-4`}
                 >
-                  {message.user?.name}
+                  {message.sender?.name}
                 </div>
                 <div className="w-full">
                   <p className="mt-[.4rem] sm:mt-[.2rem] text-xs sm:text-sm break-words whitespace-pre-wrap">

@@ -41,8 +41,16 @@ const ChatInput = ({
   imageScrollDown: boolean;
   setImageScrollDown: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { user, darkMode, globalMessages, mobile, modal } =
-    useContext(AppContext);
+  const {
+    user,
+    darkMode,
+    globalMessages,
+    mobile,
+    modal,
+    chatId,
+    setChatId,
+    privateMessages,
+  } = useContext(AppContext);
 
   const [text, setText] = useState<string>("");
 
@@ -52,6 +60,8 @@ const ChatInput = ({
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const chatIdRef = useRef(chatId);
 
   const {
     image,
@@ -70,14 +80,14 @@ const ChatInput = ({
     submitMessage({
       text: text.trim(),
       timestamp: Date.now(),
-      type: "global",
-      user: user!,
+      sender: user!,
+      recipient: chatId ? privateMessages[chatId!].user : undefined,
       image,
       url,
     });
     setText("");
     removeImage();
-  }, [image, removeImage, submitMessage, text, user]);
+  }, [chatId, image, privateMessages, removeImage, submitMessage, text, user]);
 
   const scrollToBottomForNewMessage = useCallback(() => {
     const scrollContainer = scrollContainerRef.current;
@@ -96,6 +106,10 @@ const ChatInput = ({
       scrollToBottom("instant");
     }
   }, [scrollContainerRef, scrollToBottom]);
+
+  useEffect(() => {
+    chatIdRef.current = chatId;
+  }, [chatId]);
 
   useEffect(() => {
     const input = imageInputRef.current;
@@ -165,9 +179,7 @@ const ChatInput = ({
 
   useEffect(() => {
     scrollToBottomForNewMessage();
-    const audio = new Audio("/discord-notification.mp3");
-    audio.play();
-  }, [globalMessages, scrollToBottomForNewMessage]);
+  }, [globalMessages, privateMessages, scrollToBottomForNewMessage]);
 
   useEffect(() => {
     if (imageScrollDown) {
@@ -175,6 +187,10 @@ const ChatInput = ({
       setImageScrollDown(false);
     }
   }, [imageScrollDown, scrollToBottom, setImageScrollDown]);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <>
@@ -249,7 +265,8 @@ const ChatInput = ({
         )}
         <div className="flex px-4 sm:px-5 mt-3">
           <img
-            className="h-8 w-8 sm:w-8 sm:h-8 rounded-full cursor-pointer shadow-xl mr-2"
+            onClick={() => setChatId(user?.id)}
+            className="h-8 w-8 sm:w-8 sm:h-8 rounded-full cursor-pointer shadow-xl mr-2 z-10"
             src={`data:image/jpg;base64, ${avatarList[user?.avatar!]}`}
             alt="avatar"
           />

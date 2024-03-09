@@ -1,5 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useRef } from "react";
+
+// styles
+import styles from "@/styles/animations.module.scss";
+
+// lib
+import playSound from "@/lib/playSound";
 
 // context
 import AppContext from "@/context/AppContext";
@@ -7,13 +13,49 @@ import AppContext from "@/context/AppContext";
 const Navbar = () => {
   const {
     socketConnection,
+    modal,
     setModal,
     darkMode,
     toggleDarkMode,
     user,
     initialLoad,
     mobile,
+    activeUsers,
+    chatId,
+    setChatId,
+    privateMessages,
   } = useContext(AppContext);
+
+  const pingRef = useRef<HTMLDivElement>(null);
+
+  const [newMessages, setNewMessages] = useState<number>(0);
+
+  useEffect(() => {
+    // everytime the privateMessages object changes, check for unread messages and update the newMessages state
+    setNewMessages((prev) => {
+      const newNum = Object.values(privateMessages)
+        .filter(
+          (data) =>
+            data.messages.length > 1 ||
+            (data.messages.length === 1 && !data.messages[0].exiting)
+        )
+        .reduce(
+          (acc, { IReadTheirLastMessage }) =>
+            acc + (IReadTheirLastMessage ? 0 : 1),
+          0
+        );
+      // if newNum is greater than prev, play a sound
+      if (newNum > prev) {
+        modal !== "messages" && playSound("/happy-pop-3-185288.mp3");
+        if (pingRef.current) {
+          pingRef.current.style.animation = "none";
+          pingRef.current.offsetHeight;
+          pingRef.current.style.animation = "";
+        }
+      }
+      return newNum;
+    });
+  }, [modal, privateMessages]);
 
   return !socketConnection?.connected ? (
     <div
@@ -40,26 +82,38 @@ const Navbar = () => {
       )}
     </div>
   ) : (
-    <div className="h-14 lg:h-16 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-5 select-none">
+    <div className="h-14 lg:h-16 w-full flex justify-between bg-blue-600 dark:bg-black shrink-0 text-white px-3.5 sm:px-5 select-none">
       <div className="h-full flex items-center">
         <div
           className={`${
             mobile ? "active:opacity-100" : "hover:opacity-100"
           } flex group cursor-pointer opacity-80 transition-opacity`}
-          onClick={() => setModal("credits")}
+          onClick={() => (!chatId ? setModal("credits") : setChatId(undefined))}
         >
-          <div className="hidden sm:block mr-[.6rem] lg:mr-[.65rem]">
-            <img
-              className="w-[1.4rem] lg:w-[1.7rem]"
-              src="/socketio.png"
-              alt="logo"
-            />
+          {chatId ? (
+            <div className="lg:text-xl w-[1.4rem] lg:w-[1.7rem] mr-[.25rem] sm:mr-[.6rem] lg:mr-[.65rem] text-center">
+              <i className="fa-solid fa-chevron-left" />
+            </div>
+          ) : (
+            <div className="hidden sm:block mr-[.6rem] lg:mr-[.65rem]">
+              <img
+                className="w-[1.4rem] lg:w-[1.7rem]"
+                src="/socketio.png"
+                alt="logo"
+              />
+            </div>
+          )}
+          <div
+            className={`${
+              chatId && "truncate max-w-44 sm:max-w-full"
+            } lg:text-xl`}
+          >
+            {!chatId ? "GlobalChat" : privateMessages[chatId].user.name}
           </div>
-          <div className="lg:text-xl">SocketChat</div>
         </div>
       </div>
       <div className="flex">
-        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
+        <div className="h-full flex items-center px-4 md:px-5">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
@@ -68,16 +122,24 @@ const Navbar = () => {
           >
             <span className="block">
               <i className={`fa-regular fa-comment lg:text-xl`} />
-              <div className="border-[1.5px] sm:border-2 border-blue-600 dark:border-black w-[1.125rem] h-[1.125rem] bg-red-600 dark:bg-red-500/75 backdrop-blur absolute -top-1.5 sm:-top-2 right-2 rounded-full animate-cart-bounce flex justify-center items-center">
-                <div className="text-[.55rem] sm:text-[.65rem] font-extrabold md:font-bold text-white dark:text-black">
-                  2
+              {newMessages ? (
+                <div className="border-[1.5px] sm:border-2 border-blue-600 dark:border-black w-[1.125rem] h-[1.125rem] bg-red-600 dark:bg-red-500/75 dark:backdrop-blur absolute -top-1.5 sm:-top-2 right-2 rounded-full animate-cart-bounce flex justify-center items-center">
+                  <div
+                    ref={pingRef}
+                    className={`${styles.animatePingOnce} absolute top-0 left-0 h-full w-full rounded-full -z-50 bg-red-600 dark:bg-red-500/75`}
+                  ></div>
+                  <div className="text-[.55rem] sm:text-[.65rem] font-extrabold md:font-bold text-white dark:text-black">
+                    {newMessages}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <></>
+              )}
             </span>
             <span className="hidden /md:block z-10">conversations</span>
           </div>
         </div>
-        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
+        <div className="h-full flex items-center px-4 md:px-5">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
@@ -85,14 +147,19 @@ const Navbar = () => {
             onClick={() => setModal("active users")}
           >
             <span className="relative block">
-              <div className="w-[.3rem] h-[.3rem] bg-green-500 absolute sm:-top-0.5 right-0 translate-x-full rounded-full" />
+              <div
+                className={`${
+                  Object.keys(activeUsers).length > 1 &&
+                  "bg-green-500 animate-fade-in-fast"
+                } w-[.3rem] h-[.3rem] absolute sm:-top-0.5 right-0 translate-x-full rounded-full`}
+              />
               <i className={`fa-regular fa-user lg:text-xl`} />
             </span>
             <span className="hidden /md:block">connected users</span>
           </div>
         </div>
 
-        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
+        <div className="h-full flex items-center px-4 md:px-5">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
@@ -105,7 +172,7 @@ const Navbar = () => {
             <span className="hidden /md:block">search</span>
           </div>
         </div>
-        <div className="h-full flex items-center px-4 md:px-5 lg:px-6">
+        <div className="h-full flex items-center px-4 md:px-5">
           <div
             className={`${
               mobile ? "active:text-white" : "hover:text-white"
@@ -118,7 +185,7 @@ const Navbar = () => {
             <span className="hidden /md:block">new session</span>
           </div>
         </div>
-        <div className="h-full flex items-center pl-4 md:pl-5 lg:pl-6">
+        <div className="h-full flex items-center pl-3.5 sm:pl-4 md:pl-5">
           <div className="w-5 flex justify-center items-center">
             <i
               onClick={toggleDarkMode}

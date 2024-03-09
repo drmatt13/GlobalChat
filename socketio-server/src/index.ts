@@ -1,6 +1,4 @@
-import fs from "fs";
 import { createServer } from "http";
-// import { createServer } from "http";
 import { Server } from "socket.io";
 import { config } from "dotenv";
 import ogs from "open-graph-scraper";
@@ -10,11 +8,6 @@ import type Message from "./types/messageType";
 import type User from "./types/userType";
 
 config();
-
-// const options = {
-//   key: fs.readFileSync("./server.key"),
-//   cert: fs.readFileSync("./server.cert"),
-// };
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -76,7 +69,34 @@ io.on("connection", (socket) => {
       }
     }
 
-    io.emit("message", message);
+    if (!message.recipient) io.emit("message", message);
+
+    if (message.recipient) {
+      io.to(socket.id).emit("message", message);
+      message.recipient.id &&
+        socket.id !== message.recipient.id &&
+        io.to(message.recipient.id).emit("message", message);
+    }
+  });
+
+  socket.on("read", (recipientId: string) => {
+    // if the message has no recipient
+    // or the recipient is not in the active users list
+    // or if somehow (you) are trying to read a message from yourself
+    // then return
+    if (!recipientId || !activeUsers[recipientId] || recipientId === socket.id)
+      return;
+
+    console.log(
+      "read event received from: ",
+      socket.id,
+      "recipientId: ",
+      recipientId
+    );
+
+    // emit to the other user that (you) read message their last read
+    console.log("emitting read event to: ", recipientId);
+    io.to(recipientId).emit("read", socket.id);
   });
 
   socket.on("disconnect", () => {

@@ -10,14 +10,14 @@ import AppContext from "@/context/AppContext";
 // types
 import Message from "@/types/messageType";
 
-const GlobalChat = ({
-  type,
-  id,
-}: {
-  type: "global" | "private";
-  id?: string;
-}) => {
-  const { socketConnection, globalMessages } = useContext(AppContext);
+const Chat = () => {
+  const {
+    socketConnection,
+    globalMessages,
+    chatId,
+    privateMessages,
+    activeUsers,
+  } = useContext(AppContext);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +34,10 @@ const GlobalChat = ({
       behavior,
     });
   }, []);
+
+  useEffect(() => {
+    scrollToBottom("instant");
+  }, [chatId, scrollToBottom]);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -68,46 +72,91 @@ const GlobalChat = ({
   }, [scrollToBottom]);
 
   useEffect(() => {
-    if (globalMessages.length > 0) {
-      const lastMessage = globalMessages[globalMessages.length - 1];
-      if (lastMessage.user.id === socketConnection?.id) {
-        scrollToBottom("instant");
-      }
-    }
-  }, [scrollToBottom, globalMessages, socketConnection?.id]);
+    if (
+      !chatId &&
+      globalMessages.length > 0 &&
+      globalMessages[globalMessages.length - 1].sender.id ===
+        socketConnection?.id
+    )
+      scrollToBottom("instant");
+  }, [chatId, globalMessages, scrollToBottom, socketConnection?.id]);
+
+  useEffect(() => {
+    if (
+      chatId &&
+      privateMessages[chatId]?.messages &&
+      privateMessages[chatId].messages[
+        privateMessages[chatId].messages.length - 1
+      ]?.sender.id === socketConnection?.id
+    )
+      scrollToBottom("instant");
+  }, [chatId, privateMessages, scrollToBottom, socketConnection?.id]);
 
   const submitMessage = useCallback(
     (message: Message) => socketConnection?.emit("message", message),
     [socketConnection]
   );
 
+  const [chatInitTime, setChatInitTime] = useState<number>(
+    new Date().getTime()
+  );
+
   return (
     <div className="relative flex-1 flex justify-center overflow-hidden">
       <div className="w-full flex flex-col">
         <div
-          className="w-full flex-1 flex flex-col overflow-y-scroll px-4 pb-1"
+          className={`${
+            chatId && !activeUsers[chatId] ? "pb:2.5 sm:pb-3" : "pb-[3px]"
+          } w-full flex-1 flex flex-col overflow-y-scroll overflow-x-hidden pl-4 pr-24`}
           ref={scrollContainerRef}
         >
-          {globalMessages.map((message, index) => (
-            <ChatMessage
-              message={message}
-              setImageScrollDown={setImageScrollDown}
-              key={index}
-            />
-          ))}
+          {!chatId &&
+            globalMessages.map((message, index) => (
+              <ChatMessage
+                message={message}
+                setImageScrollDown={setImageScrollDown}
+                key={index}
+              />
+            ))}
+          {chatId &&
+            privateMessages[chatId]?.messages &&
+            privateMessages[chatId].messages.map((message, index) => (
+              <ChatMessage
+                message={message}
+                setImageScrollDown={setImageScrollDown}
+                key={index}
+              />
+            ))}
+          {chatId &&
+            privateMessages[chatId]?.messages.length === 0 &&
+            !activeUsers[chatId] && (
+              <ChatMessage
+                message={{
+                  sender: {
+                    id: "system",
+                    name: privateMessages[chatId].user.name,
+                  },
+                  timestamp: chatInitTime,
+                  exiting: true,
+                }}
+                setImageScrollDown={setImageScrollDown}
+              />
+            )}
         </div>
-        <ChatInput
-          submitMessage={submitMessage}
-          scrollIsAtBottom={scrollIsAtBottom}
-          scrollToBottom={scrollToBottom}
-          scrollContainerRef={scrollContainerRef}
-          scrollBarWidth={scrollbarWidth}
-          imageScrollDown={imageScrollDown}
-          setImageScrollDown={setImageScrollDown}
-        />
+        {!(chatId && !activeUsers[chatId]) && (
+          <ChatInput
+            submitMessage={submitMessage}
+            scrollIsAtBottom={scrollIsAtBottom}
+            scrollToBottom={scrollToBottom}
+            scrollContainerRef={scrollContainerRef}
+            scrollBarWidth={scrollbarWidth}
+            imageScrollDown={imageScrollDown}
+            setImageScrollDown={setImageScrollDown}
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default GlobalChat;
+export default Chat;

@@ -10,10 +10,10 @@ const ChooseUsername = () => {
 
   // Validation checks for username
   const isValidUsername = (username: string) => {
-    // const hasNoSpaces = !/\s/.test(username);
-    // const hasNoBadSpecialChars = /^[a-zA-Z0-9_-]*$/.test(username);
+    const hasNoSpaces = !/\s/.test(username);
+    const hasNoBadSpecialChars = /^[a-zA-Z0-9_-]*$/.test(username);
     const isWithinCharLimit = username.length >= 3 && username.length <= 20;
-    return isWithinCharLimit;
+    return hasNoSpaces && hasNoBadSpecialChars && isWithinCharLimit;
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {

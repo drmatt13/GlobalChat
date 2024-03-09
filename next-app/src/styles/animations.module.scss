@@ -1,0 +1,30 @@
+@keyframes ping-once {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animatePingOnce {
+  animation: ping-once 1s forwards cubic-bezier(0, 0, 0.2, 1) 1;
+}
+
+@keyframes pulse-once {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animatePulseOnce {
+  animation: pulse-once .2s forwards ease-in;
+}

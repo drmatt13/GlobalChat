@@ -16,15 +16,27 @@ interface AppContextInterface {
   setUser: Dispatch<SetStateAction<User>>;
   globalMessages: Message[];
   setGlobalMessages: Dispatch<SetStateAction<Message[]>>;
-  privateMessages: { [id: string]: { user: User; messages: Message[] } };
+  unreadGlobalMessage: boolean;
+  setUnreadGlobalMessage: Dispatch<SetStateAction<boolean>>;
+  privateMessages: {
+    [id: string]: {
+      user: User;
+      messages: Message[];
+      IReadTheirLastMessage: number;
+      TheyReadMyLastMessage: number;
+    };
+  };
   setPrivateMessages: Dispatch<
     SetStateAction<{
       [id: string]: {
         user: User;
         messages: Message[];
+        IReadTheirLastMessage: number;
+        TheyReadMyLastMessage: number;
       };
     }>
   >;
+  updatePrivateMessages: (user: User) => void;
   socketConnection: ReturnType<typeof io> | null;
   initialLoad: boolean;
   modal:
@@ -60,13 +72,8 @@ interface AppContextInterface {
       };
     }>
   >;
-  chat: {
-    type: "global" | "private";
-    id?: string | undefined;
-  };
-  setChat: Dispatch<
-    SetStateAction<{ type: "global" | "private"; id?: string | undefined }>
-  >;
+  chatId: string | undefined;
+  setChatId: Dispatch<SetStateAction<string | undefined>>;
 }
 
 const AppContext = createContext<AppContextInterface>({
@@ -82,14 +89,17 @@ const AppContext = createContext<AppContextInterface>({
   setUser: () => {},
   globalMessages: [],
   setGlobalMessages: () => {},
+  unreadGlobalMessage: false,
+  setUnreadGlobalMessage: () => {},
   privateMessages: {},
   setPrivateMessages: () => {},
+  updatePrivateMessages: () => {},
   socketConnection: null,
   initialLoad: true,
   activeUsers: {},
   setActiveUsers: () => {},
-  chat: { type: "global" },
-  setChat: () => {},
+  chatId: undefined,
+  setChatId: () => {},
 });
 
 export default AppContext;

@@ -1,10 +1,8 @@
 import type User from "./userType";
 
 interface Message {
-  user: User;
-  type: "global" | "private";
-  sender_id?: string;
-  recipient_id?: string;
+  sender: User;
+  recipient?: User;
   text?: string;
   image?: string;
   url?: string;

@@ -47,17 +47,37 @@ export default function Home() {
 
   const [user, setUser] = useState<User>({});
 
-  const [chat, setChat] = useState<{
-    type: "global" | "private";
-    id?: string;
-  }>({ type: "global" });
+  const [chatId, setChatId] = useState<string | undefined>(undefined);
 
   const [fullScreenImage, setFullScreenImage] = useState<string>("");
 
   const [globalMessages, setGlobalMessages] = useState<Message[]>([]);
+  const [unreadGlobalMessage, setUnreadGlobalMessage] = useState(false);
   const [privateMessages, setPrivateMessages] = useState<{
-    [id: string]: { user: User; messages: Message[] };
+    [id: string]: {
+      user: User;
+      messages: Message[];
+      IReadTheirLastMessage: number;
+      TheyReadMyLastMessage: number;
+    };
   }>({});
+
+  const updatePrivateMessages = useCallback(
+    (user: User) => {
+      if (user.id && !privateMessages[user.id]) {
+        setPrivateMessages((prev) => ({
+          ...prev,
+          [user.id!]: {
+            user,
+            messages: [],
+            IReadTheirLastMessage: 0,
+            TheyReadMyLastMessage: 0,
+          },
+        }));
+      }
+    },
+    [privateMessages]
+  );
 
   const { socketConnection, socketError } = useSocket({
     user,
@@ -65,6 +85,8 @@ export default function Home() {
     setGlobalMessages,
     setPrivateMessages,
     setActiveUsers,
+    chatId,
+    setChatId,
   });
 
   const toggleDarkMode = useCallback(() => {
@@ -78,6 +100,27 @@ export default function Home() {
       Cookies.set("darkMode", "true");
     }
   }, [setDarkMode]);
+
+  useEffect(() => {
+    if (user.id) updatePrivateMessages(user);
+  }, [updatePrivateMessages, user]);
+
+  useEffect(() => {
+    // if i didnt read their last message, then i want to emit that i read their last message
+    if (chatId && privateMessages[chatId].messages.length > 0) {
+      if (!privateMessages[chatId].IReadTheirLastMessage) {
+        setPrivateMessages((prev) => ({
+          ...prev,
+          [chatId]: {
+            ...prev[chatId],
+            IReadTheirLastMessage: Date.now(),
+          },
+        }));
+        // emit
+        socketConnection?.emit("read", chatId);
+      }
+    }
+  }, [chatId, privateMessages, socketConnection]);
 
   useEffect(() => {
     if (Cookies.get("darkMode") === "true") {
@@ -108,6 +151,10 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log(privateMessages);
+  }, [privateMessages]);
+
   return (
     <>
       <AppContext.Provider
@@ -120,8 +167,11 @@ export default function Home() {
           setFullScreenImage,
           globalMessages,
           setGlobalMessages,
+          unreadGlobalMessage,
+          setUnreadGlobalMessage,
           privateMessages,
           setPrivateMessages,
+          updatePrivateMessages,
           darkMode,
           toggleDarkMode,
           mobile,
@@ -129,13 +179,11 @@ export default function Home() {
           initialLoad,
           activeUsers,
           setActiveUsers,
-          chat,
-          setChat,
+          chatId,
+          setChatId,
         }}
       >
-        <div
-          className={`h-full relative bg-gray-200 dark:bg-zinc-800 dark:text-white`}
-        >
+        <div className="h-full relative bg-gray-200 dark:bg-zinc-800 dark:text-white">
           <div className="sticky top-0">
             {user.id && (
               <>
@@ -147,7 +195,7 @@ export default function Home() {
                 <FullScreenImage />
               </>
             )}
-            <div className="relative w-full h-dvh flex flex-col justify-start overflow-y-hidden">
+            <div className="relative w-full h-dvh flex flex-col justify-start overflow-hidden">
               <Navbar />
               {!user.name ? (
                 <ChooseUsername />
@@ -158,18 +206,9 @@ export default function Home() {
               ) : !socketConnection ? (
                 <div>connecting...</div>
               ) : (
-                <>
-                  <div
-                    className={`${
-                      chat.type !== "global" && "hidden"
-                    } h-full flex flex-col justify-start overflow-y-hidden`}
-                  >
-                    <Chat type="global" />
-                  </div>
-                  {chat.type === "private" && chat.id && (
-                    <Chat type="private" id={chat.id} />
-                  )}
-                </>
+                <div className="h-full flex flex-col justify-start overflow-hidden">
+                  <Chat />
+                </div>
               )}
             </div>
           </div>
