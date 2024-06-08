@@ -4,9 +4,6 @@
 sudo yum update -y
 sudo yum install -y git docker
 
-# Increase Node.js heap size globally
-export NODE_OPTIONS="--max-old-space-size=2048"
-
 # Start Docker and enable it to start on boot
 sudo service docker start
 sudo systemctl enable docker
