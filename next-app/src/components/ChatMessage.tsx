@@ -224,7 +224,7 @@ const ChatMessage = ({
                       onLoad={() => setImageScrollDown(true)}
                     />
                   )}
-                  <div className="flex-1 text-left p-2 overflow-hidden text-xs bg-white dark:bg-zinc-700 shadow-sm text-neutral-700 dark:text-neutral-200 cursor-pointer">
+                  <div className="flex-1 text-left p-2 overflow-hidden text-xs bg-white dark:bg-zinc-700 shadow-sm text-neutral-700 dark:text-neutral-200 cursor-pointer min-h-[4.5rem]">
                     {message.og.siteName && (
                       <p className="w-full h-[1.125rem] truncate">
                         {message.og.siteName}
@@ -236,7 +236,12 @@ const ChatMessage = ({
                       </p>
                     )}
                     {message.og.description && (
-                      <p className="hidden sm:inline-block w-full h-[1.125rem] truncate">
+                      <p
+                        className={`${
+                          !message.og.url ||
+                          (message.og.siteName && "h-[2.125rem]")
+                        } hidden sm:inline-block w-full truncate`}
+                      >
                         {message.og.description}
                       </p>
                     )}

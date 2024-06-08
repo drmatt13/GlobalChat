@@ -1,26 +1,33 @@
 #!/bin/bash
 
+# Update and install necessary packages
 sudo yum update -y
-sudo yum install git -y
-sudo yum install docker -y
+sudo yum install -y git docker
+
+# Increase Node.js heap size globally
+export NODE_OPTIONS="--max-old-space-size=2048"
+
+# Start Docker and enable it to start on boot
 sudo service docker start
 sudo systemctl enable docker
 
+# Install Docker Compose
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
 sudo chmod +x /usr/local/bin/docker-compose
 
-git clone https://github.com/drmatt13/SocketChat.git
-cd SocketChat/next-app
+# Clone the repository
+git clone https://github.com/drmatt13/GlobalChat.git
+cd GlobalChat/next-app
 
+# Fetch instance metadata
 TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" --silent)
-echo "Token: $TOKEN"
-
 PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4 --silent)
-echo "Public IP: $PUBLIC_IP"
 
+# Create production environment variables
 echo "NEXT_PUBLIC_SOCKETIO_SERVER_URL=http://${PUBLIC_IP}:8080" > .env.production
 
+# Go to the parent directory
 cd ..
 
+# Start the Docker containers using docker-compose
 sudo docker-compose up
